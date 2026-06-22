@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# เว็บไซต์กลุ่มบริหารงานทั่วไป
 
-## Getting Started
+เว็บไซต์องค์กรระดับโรงเรียน (School Enterprise Portal + Admin Dashboard + CMS)
+สร้างด้วย **Next.js 16 (App Router) + Supabase + Tailwind CSS v4 + shadcn/ui** ตามชุดเอกสารออกแบบ
 
-First, run the development server:
+---
+
+## สารบัญ
+1. [ฟีเจอร์](#ฟีเจอร์)
+2. [เทคโนโลยี](#เทคโนโลยี)
+3. [เริ่มต้นใช้งาน (Local)](#เริ่มต้นใช้งาน-local)
+4. [ตั้งค่า Supabase (5 ขั้นตอน)](#ตั้งค่า-supabase-5-ขั้นตอน)
+5. [Deploy ขึ้น Vercel](#deploy-ขึ้น-vercel)
+6. [โครงสร้างโปรเจกต์](#โครงสร้างโปรเจกต์)
+7. [บทบาทผู้ใช้ (Roles)](#บทบาทผู้ใช้-roles)
+
+---
+
+## ฟีเจอร์
+
+**Public Website**
+- หน้าแรก (Hero, บริการด่วน, ข่าว, เอกสาร, ภาพกิจกรรม, บุคลากร, ติดต่อ)
+- ข่าวประชาสัมพันธ์ (ค้นหา + กรองหมวดหมู่) + หน้ารายละเอียด
+- ระบบบริการออนไลน์, ดาวน์โหลดเอกสาร (นับยอดดาวน์โหลด)
+- ภาพกิจกรรม (อัลบั้ม + Lightbox), บุคลากร, เกี่ยวกับเรา, ติดต่อเรา
+- SEO (metadata, Open Graph, sitemap, robots), รองรับมือถือ 100%, โทนเหลืองทอง
+
+**Admin Dashboard** (`/admin`)
+- Login (Supabase Auth) + ป้องกันเส้นทางด้วย Proxy + Role guard
+- แดชบอร์ดสรุปสถิติ
+- CRUD: ข่าว / เอกสาร / บริการ / บุคลากร / ภาพกิจกรรม
+- ตั้งค่าเว็บไซต์ + จัดการผู้ใช้งาน (เฉพาะ Super Admin)
+- อัปโหลดไฟล์เข้า Supabase Storage (จำกัดชนิด/ขนาดไฟล์), Toast, Confirm Dialog
+
+---
+
+## เทคโนโลยี
+| ด้าน | เครื่องมือ |
+|---|---|
+| Frontend | Next.js 16 (App Router, TypeScript) |
+| UI | Tailwind CSS v4 + shadcn/ui + Lucide |
+| Backend | Server Actions |
+| Database/Auth/Storage | Supabase (PostgreSQL + RLS) |
+| Validation | Zod + React Hook Form |
+| Hosting | Vercel |
+
+---
+
+## เริ่มต้นใช้งาน (Local)
 
 ```bash
+npm install
+cp .env.example .env.local   # แล้วแก้ค่าให้ครบ
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+เปิด http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> โปรเจกต์ตั้งค่า `.env.local` เป็น **placeholder** ไว้แล้ว จึง `npm run build` / `npm run dev` ได้ทันที
+> หน้าเว็บจะแสดง empty state จนกว่าจะเชื่อม Supabase จริง
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ตั้งค่า Supabase (5 ขั้นตอน)
 
-To learn more about Next.js, take a look at the following resources:
+1. **สร้างโปรเจกต์** ที่ https://supabase.com → คัดลอกค่าจาก *Project Settings → API*:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role` → `SUPABASE_SERVICE_ROLE_KEY`
+   นำไปใส่ใน `.env.local`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **รัน Migration** ที่ *SQL Editor* โดยรันไฟล์ตามลำดับ:
+   ```
+   supabase/migrations/0001_init_schema.sql
+   supabase/migrations/0002_rls_policies.sql
+   supabase/migrations/0003_storage.sql
+   supabase/seed.sql           ← ข้อมูลตั้งต้น (ไม่บังคับ)
+   ```
+   (หรือใช้ Supabase CLI: `supabase db push` แล้ว `supabase db execute -f supabase/seed.sql`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **สร้าง Storage Buckets** — ไฟล์ `0003_storage.sql` สร้างให้แล้ว (news-covers, document-files,
+   gallery-images, staff-images, site-assets เป็น public read) ตรวจได้ที่เมนู *Storage*
 
-## Deploy on Vercel
+4. **สร้างผู้ดูแลคนแรก** ที่ *Authentication → Users → Add user* (กรอกอีเมล/รหัสผ่าน, ติ๊ก Auto Confirm)
+   ระบบจะสร้างโปรไฟล์อัตโนมัติ (role เริ่มต้น = viewer)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **เลื่อนเป็น Super Admin** ที่ *SQL Editor*:
+   ```sql
+   update public.profiles set role = 'super_admin' where email = 'อีเมลของคุณ';
+   ```
+   จากนั้น login ที่ `/login` ได้เลย
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Deploy ขึ้น Vercel
+
+1. push โค้ดขึ้น GitHub
+2. ที่ Vercel → New Project → import repo
+3. ใส่ Environment Variables (ค่าเดียวกับ `.env.local` แต่ `NEXT_PUBLIC_SITE_URL` ใช้โดเมนจริง)
+4. Deploy — Vercel ตรวจ Next.js ให้อัตโนมัติ
+5. ตั้งค่าโดเมน (ถ้ามี) ที่ *Settings → Domains*
+
+> **ความปลอดภัย:** `SUPABASE_SERVICE_ROLE_KEY` ใช้เฉพาะฝั่ง server เท่านั้น (ไม่มีคำนำหน้า `NEXT_PUBLIC_`)
+
+---
+
+## โครงสร้างโปรเจกต์
+
+```
+app/
+  (public)/      หน้าเว็บสาธารณะ + layout (header/footer)
+  admin/         หลังบ้าน + layout (sidebar/topbar) + guard
+  login/         หน้าเข้าสู่ระบบ
+components/
+  public/  admin/  ui/ (shadcn)  brand-icons, lucide-icon
+lib/
+  supabase/  (client / server / proxy)
+  actions/   (server actions: auth, news, documents, services, staff, gallery, settings, users)
+  data.ts  admin-data.ts  validations.ts  permissions.ts  format.ts  slug.ts  constants.ts
+types/         TypeScript types
+supabase/      migrations/ + seed.sql
+proxy.ts       Next.js 16 Proxy (refresh session + ป้องกัน /admin)
+```
+
+---
+
+## บทบาทผู้ใช้ (Roles)
+| สิทธิ์ | super_admin | admin | editor | viewer |
+|---|:---:|:---:|:---:|:---:|
+| ดูแดชบอร์ด | ✅ | ✅ | ✅ | ✅ |
+| เพิ่ม/แก้ไข ข่าว-เอกสาร | ✅ | ✅ | ✅ | ❌ |
+| ลบข่าว-เอกสาร | ✅ | ✅ | ❌ | ❌ |
+| จัดการบริการ/บุคลากร/ตั้งค่า | ✅ | ✅ | ❌ | ❌ |
+| จัดการผู้ใช้งาน | ✅ | ❌ | ❌ | ❌ |
