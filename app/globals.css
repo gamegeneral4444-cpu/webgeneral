@@ -97,6 +97,14 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #facc15;
+
+  --admin-navy: #082b55;
+  --admin-navy-strong: #061f3e;
+  --admin-gold: #d99a04;
+  --admin-gold-bright: #f2b91e;
+  --admin-ink: #102a4c;
+  --admin-surface: #f8fafc;
+  --admin-border: #e8dfcf;
 }
 
 .dark {

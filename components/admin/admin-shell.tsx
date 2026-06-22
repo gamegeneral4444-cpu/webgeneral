@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, GraduationCap, LogOut, ExternalLink } from "lucide-react";
+import { ChevronDown, ExternalLink, Landmark, LogOut, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -27,17 +27,17 @@ function NavLinks({ role, onNavigate }: { role: Role; onNavigate?: () => void })
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
 
   return (
-    <nav className="flex flex-col gap-1 p-3" aria-label="เมนูหลังบ้าน">
+    <nav className="flex flex-col gap-1.5 px-3 py-4" aria-label="เมนูหลังบ้าน">
       {items.map((item) => (
         <Link
           key={item.href}
           href={item.href}
           onClick={onNavigate}
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+            "relative flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
             isActive(item.href)
-              ? "bg-sidebar-accent text-sidebar-primary"
-              : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+              ? "bg-gradient-to-r from-[var(--admin-gold)] to-[var(--admin-gold-bright)] text-[var(--admin-navy-strong)] shadow-sm"
+              : "text-white/78 hover:bg-white/8 hover:text-white",
           )}
         >
           <item.icon className="size-5 shrink-0" aria-hidden />
@@ -50,15 +50,36 @@ function NavLinks({ role, onNavigate }: { role: Role; onNavigate?: () => void })
 
 function SidebarBrand() {
   return (
-    <Link href="/admin" className="flex items-center gap-3 border-b border-sidebar-border px-5 py-4">
-      <span className="grid size-10 place-items-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground">
-        <GraduationCap className="size-5" aria-hidden />
+    <Link href="/admin" className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
+      <span className="grid size-12 shrink-0 place-items-center rounded-full border-2 border-[var(--admin-gold-bright)] bg-white/5 text-[var(--admin-gold-bright)] shadow-inner">
+        <Landmark className="size-6" aria-hidden />
       </span>
       <span className="leading-tight">
-        <span className="block text-sm font-bold text-white">กลุ่มบริหารงานทั่วไป</span>
-        <span className="block text-xs text-sidebar-foreground/60">ระบบจัดการหลังบ้าน</span>
+        <span className="block text-base font-bold text-white">Admin Dashboard</span>
+        <span className="mt-1 block text-xs text-white/65">กลุ่มบริหารงานทั่วไป</span>
       </span>
     </Link>
+  );
+}
+
+function SidebarContent({ role, onNavigate }: { role: Role; onNavigate?: () => void }) {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex-1 overflow-y-auto">
+        <NavLinks role={role} onNavigate={onNavigate} />
+      </div>
+      <div className="border-t border-white/10 p-3">
+        <Link
+          href="/"
+          target="_blank"
+          onClick={onNavigate}
+          className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/8 hover:text-[var(--admin-gold-bright)]"
+        >
+          <ExternalLink className="size-4" aria-hidden />
+          ดูเว็บไซต์จริง
+        </Link>
+      </div>
+    </div>
   );
 }
 
@@ -77,48 +98,51 @@ export function AdminShell({
   const initials = (fullName || email || "A").slice(0, 1).toUpperCase();
 
   return (
-    <div className="min-h-dvh bg-muted/40 lg:grid lg:grid-cols-[16rem_1fr]">
-      {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-dvh flex-col bg-sidebar lg:flex">
+    <div className="min-h-dvh bg-[var(--admin-surface)] lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)]">
+      <aside className="sticky top-0 hidden h-dvh flex-col overflow-hidden bg-[var(--admin-navy)] lg:flex">
         <SidebarBrand />
-        <div className="flex-1 overflow-y-auto">
-          <NavLinks role={role} />
-        </div>
-        <div className="border-t border-sidebar-border p-3">
-          <Link
-            href="/"
-            target="_blank"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 hover:text-gold"
-          >
-            <ExternalLink className="size-4" aria-hidden /> ดูเว็บไซต์
-          </Link>
-        </div>
+        <SidebarContent role={role} />
       </aside>
 
-      <div className="flex min-h-dvh flex-col">
-        {/* Topbar */}
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b bg-background px-4 py-3">
+      <div className="flex min-h-dvh min-w-0 flex-col">
+        <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-3 border-b border-[var(--admin-border)] bg-white/95 px-4 shadow-sm backdrop-blur sm:px-6">
           <div className="flex items-center gap-2">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="lg:hidden" aria-label="เปิดเมนู">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="border-[var(--admin-border)] text-[var(--admin-ink)] lg:hidden"
+                  aria-label="เปิดเมนู"
+                >
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-sidebar p-0">
+              <SheetContent
+                side="left"
+                aria-describedby={undefined}
+                className="w-72 gap-0 border-r-0 bg-[var(--admin-navy)] p-0 text-white"
+              >
                 <SheetTitle className="sr-only">เมนูหลังบ้าน</SheetTitle>
                 <SidebarBrand />
-                <NavLinks role={role} onNavigate={() => setOpen(false)} />
+                <SidebarContent role={role} onNavigate={() => setOpen(false)} />
               </SheetContent>
             </Sheet>
-            <span className="font-semibold text-foreground">หลังบ้าน</span>
+            <div className="leading-tight">
+              <p className="text-xs font-medium text-[var(--admin-gold)]">หน้าหลัก</p>
+              <p className="text-sm font-semibold text-[var(--admin-ink)]">แผงควบคุมระบบ</p>
+            </div>
           </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-full border bg-card py-1 pl-1 pr-3 transition-colors hover:bg-accent">
+              <button
+                type="button"
+                aria-label="เปิดเมนูบัญชีผู้ใช้"
+                className="flex items-center gap-2 rounded-full border border-[var(--admin-border)] bg-white py-1 pl-1 pr-2 transition-colors hover:bg-amber-50 sm:pr-3"
+              >
                 <Avatar className="size-8">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                  <AvatarFallback className="bg-[var(--admin-navy)] text-sm text-white">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
@@ -130,6 +154,7 @@ export function AdminShell({
                     {ROLE_LABELS[role]}
                   </span>
                 </span>
+                <ChevronDown className="hidden size-4 text-muted-foreground sm:block" aria-hidden />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -151,7 +176,7 @@ export function AdminShell({
           </DropdownMenu>
         </header>
 
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
+        <main className="min-w-0 flex-1 p-4 sm:p-6 xl:p-7">{children}</main>
       </div>
     </div>
   );
