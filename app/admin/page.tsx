@@ -1,112 +1,70 @@
 import Link from "next/link";
-import {
-  Newspaper,
-  CheckCircle2,
-  FileText,
-  Images,
-  Grid3x3,
-  Users,
-  ArrowRight,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { NEWS_STATUS } from "@/lib/constants";
+import { FileUp, Plus } from "lucide-react";
+import { ActivityTimeline } from "@/components/admin/dashboard/activity-timeline";
+import { AnalyticsSummary } from "@/components/admin/dashboard/analytics-summary";
+import { QuickActions } from "@/components/admin/dashboard/quick-actions";
+import { RecentDocuments } from "@/components/admin/dashboard/recent-documents";
+import { RecentNewsTable } from "@/components/admin/dashboard/recent-news-table";
+import { RecentStaff } from "@/components/admin/dashboard/recent-staff";
+import { StatCard } from "@/components/admin/dashboard/stat-card";
+import { adminListAnalytics, adminListDocuments, adminListNews, adminListRecentAudit, adminListStaff } from "@/lib/admin-data";
+import { buildDashboardCards } from "@/lib/dashboard";
 import { getDashboardStats } from "@/lib/data";
-import { adminListNews, adminListDocuments } from "@/lib/admin-data";
-import { formatThaiDate } from "@/lib/format";
-import type { NewsStatus } from "@/types/database";
+import { canWrite } from "@/lib/permissions";
+import { getCurrentUser } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "แดชบอร์ด" };
 
-const STATUS_STYLE: Record<NewsStatus, string> = {
-  published: "bg-emerald-100 text-emerald-700",
-  draft: "bg-amber-100 text-amber-700",
-  archived: "bg-slate-100 text-slate-600",
-};
-
 export default async function AdminDashboard() {
-  const [stats, news, documents] = await Promise.all([
+  const [current, stats, news, documents, staff, activity, analytics] = await Promise.all([
+    getCurrentUser(),
     getDashboardStats(),
     adminListNews(),
     adminListDocuments(),
+    adminListStaff(),
+    adminListRecentAudit(6),
+    adminListAnalytics(30),
   ]);
-
-  const cards = [
-    { label: "ข่าวทั้งหมด", value: stats.news, icon: Newspaper, color: "text-blue-600 bg-blue-50" },
-    { label: "ข่าวเผยแพร่แล้ว", value: stats.published, icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50" },
-    { label: "เอกสาร", value: stats.documents, icon: FileText, color: "text-red-600 bg-red-50" },
-    { label: "อัลบั้มภาพ", value: stats.albums, icon: Images, color: "text-purple-600 bg-purple-50" },
-    { label: "บริการที่เปิด", value: stats.services, icon: Grid3x3, color: "text-amber-600 bg-amber-50" },
-    { label: "บุคลากร", value: stats.staff, icon: Users, color: "text-teal-600 bg-teal-50" },
-  ];
+  const role = current?.profile?.role ?? "viewer";
+  const pageViews = analytics.reduce((sum, row) => sum + row.page_views, 0);
+  const cards = buildDashboardCards({ ...stats, pageViews });
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">แดชบอร์ด</h1>
-        <p className="mt-1 text-sm text-muted-foreground">ภาพรวมข้อมูลของเว็บไซต์</p>
-      </div>
-
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
-        {cards.map((c) => (
-          <div key={c.label} className="rounded-xl border bg-card p-4 shadow-sm">
-            <div className={`grid size-10 place-items-center rounded-lg ${c.color}`}>
-              <c.icon className="size-5" aria-hidden />
-            </div>
-            <p className="mt-3 text-2xl font-bold text-foreground">{c.value}</p>
-            <p className="text-xs text-muted-foreground">{c.label}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        {/* ข่าวล่าสุด */}
-        <div className="rounded-xl border bg-card shadow-sm">
-          <div className="flex items-center justify-between border-b px-5 py-3">
-            <h2 className="font-semibold text-foreground">ข่าวล่าสุด</h2>
-            <Link href="/admin/news" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-              ดูทั้งหมด <ArrowRight className="size-4" aria-hidden />
+    <div className="mx-auto max-w-[1600px] space-y-5">
+      <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+        <div>
+          <p className="text-sm font-semibold text-[var(--admin-gold)]">ภาพรวมระบบ</p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-[var(--admin-ink)] sm:text-3xl">แดชบอร์ดผู้ดูแลระบบ</h1>
+          <p className="mt-1 text-sm text-muted-foreground">จัดการข่าวสาร เอกสาร ระบบบริการ บุคลากร และข้อมูลเว็บไซต์</p>
+        </div>
+        {canWrite(role) && (
+          <div className="flex flex-wrap gap-2">
+            <Link href="/admin/news/create" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-gradient-to-r from-[var(--admin-gold)] to-[var(--admin-gold-bright)] px-4 text-sm font-semibold text-[var(--admin-navy-strong)] shadow-sm hover:brightness-105">
+              <Plus className="size-4" aria-hidden /> เพิ่มข่าวใหม่
+            </Link>
+            <Link href="/admin/documents/create" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--admin-gold)] bg-white px-4 text-sm font-semibold text-[var(--admin-ink)] hover:bg-amber-50">
+              <FileUp className="size-4 text-[var(--admin-gold)]" aria-hidden /> อัปโหลดเอกสาร
             </Link>
           </div>
-          <ul className="divide-y">
-            {news.slice(0, 5).map((n) => (
-              <li key={n.id} className="flex items-center justify-between gap-3 px-5 py-3">
-                <Link href={`/admin/news/${n.id}/edit`} className="min-w-0 flex-1 truncate text-sm text-foreground hover:text-primary">
-                  {n.title}
-                </Link>
-                <Badge className={STATUS_STYLE[n.status]} variant="secondary">
-                  {NEWS_STATUS[n.status]}
-                </Badge>
-              </li>
-            ))}
-            {news.length === 0 && (
-              <li className="px-5 py-8 text-center text-sm text-muted-foreground">ยังไม่มีข่าว</li>
-            )}
-          </ul>
-        </div>
+        )}
+      </header>
 
-        {/* เอกสารล่าสุด */}
-        <div className="rounded-xl border bg-card shadow-sm">
-          <div className="flex items-center justify-between border-b px-5 py-3">
-            <h2 className="font-semibold text-foreground">เอกสารล่าสุด</h2>
-            <Link href="/admin/documents" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-              ดูทั้งหมด <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-          <ul className="divide-y">
-            {documents.slice(0, 5).map((d) => (
-              <li key={d.id} className="flex items-center justify-between gap-3 px-5 py-3">
-                <span className="min-w-0 flex-1 truncate text-sm text-foreground">{d.title}</span>
-                <span className="shrink-0 text-xs text-muted-foreground">{formatThaiDate(d.created_at)}</span>
-              </li>
-            ))}
-            {documents.length === 0 && (
-              <li className="px-5 py-8 text-center text-sm text-muted-foreground">ยังไม่มีเอกสาร</li>
-            )}
-          </ul>
+      <section className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5" aria-label="สถิติภาพรวม">
+        {cards.map((card) => <StatCard key={card.label} {...card} />)}
+      </section>
+
+      <div className="grid gap-5 xl:grid-cols-12">
+        <div className="xl:col-span-8"><RecentNewsTable rows={news} /></div>
+        <div className="xl:col-span-4"><QuickActions role={role} /></div>
+        <div className="grid gap-5 sm:grid-cols-2 xl:col-span-8">
+          <RecentDocuments rows={documents} />
+          <RecentStaff rows={staff} />
         </div>
+        <div className="xl:col-span-4"><ActivityTimeline rows={activity} /></div>
       </div>
+
+      <div id="analytics"><AnalyticsSummary rows={analytics} /></div>
     </div>
   );
 }

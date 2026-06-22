@@ -8,6 +8,8 @@ import type {
   Category,
   SiteSettings,
   Profile,
+  AuditSummary,
+  AnalyticsDaily,
 } from "@/types/database";
 
 async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
@@ -135,5 +137,35 @@ export async function adminListProfiles(): Promise<Profile[]> {
     const supabase = await createClient();
     const { data } = await supabase.from("profiles").select("*").order("created_at");
     return (data as Profile[]) ?? [];
+  }, []);
+}
+
+export async function adminListRecentAudit(limit = 6): Promise<AuditSummary[]> {
+  return safe(async () => {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc("list_audit_summaries", {
+      result_limit: Math.min(Math.max(limit, 1), 100),
+      result_offset: 0,
+      action_filter: null,
+      table_filter: null,
+    });
+    if (error) return [];
+    return (data as AuditSummary[]) ?? [];
+  }, []);
+}
+
+export async function adminListAnalytics(days = 30): Promise<AnalyticsDaily[]> {
+  return safe(async () => {
+    const boundedDays = Math.min(Math.max(days, 1), 90);
+    const from = new Date();
+    from.setDate(from.getDate() - boundedDays + 1);
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("analytics_daily")
+      .select("date,path,page_views")
+      .gte("date", from.toISOString().slice(0, 10))
+      .order("date", { ascending: true });
+    if (error) return [];
+    return (data as AnalyticsDaily[]) ?? [];
   }, []);
 }

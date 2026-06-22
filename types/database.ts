@@ -128,3 +128,25 @@ export interface SiteSettings {
   updated_by: string | null;
   updated_at: string;
 }
+
+export interface AuditSummary {
+  id: string;
+  user_id: string | null;
+  action: "INSERT" | "UPDATE" | "DELETE" | string;
+  table_name: string | null;
+  record_id: string | null;
+  created_at: string;
+  actor_full_name: string | null;
+  actor_email: string | null;
+}
+
+export interface AuditLog extends AuditSummary {
+  old_data: Record<string, unknown> | null;
+  new_data: Record<string, unknown> | null;
+}
+
+export interface AnalyticsDaily {
+  date: string;
+  path: string;
+  page_views: number;
+}
