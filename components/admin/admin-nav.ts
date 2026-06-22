@@ -6,6 +6,8 @@ import {
   Grid3x3,
   Users,
   Settings,
+  Tags,
+  History,
   UserCog,
   type LucideIcon,
 } from "lucide-react";
@@ -25,7 +27,9 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin/gallery", label: "ภาพกิจกรรม", icon: Images },
   { href: "/admin/services", label: "ระบบบริการ", icon: Grid3x3, roles: ["super_admin", "admin"] },
   { href: "/admin/staff", label: "บุคลากร", icon: Users, roles: ["super_admin", "admin"] },
+  { href: "/admin/categories", label: "จัดการหมวดหมู่", icon: Tags, roles: ["super_admin", "admin"] },
   { href: "/admin/settings", label: "ตั้งค่าเว็บไซต์", icon: Settings, roles: ["super_admin", "admin"] },
+  { href: "/admin/activity", label: "ประวัติกิจกรรม", icon: History },
   { href: "/admin/users", label: "ผู้ใช้งาน", icon: UserCog, roles: ["super_admin"] },
 ];
 
