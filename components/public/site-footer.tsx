@@ -114,7 +114,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
             © {new Date().getFullYear()} {schoolName} · {siteName} สงวนลิขสิทธิ์
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/about" className="hover:underline">
+            <Link href="/privacy" className="hover:underline">
               นโยบายความเป็นส่วนตัว
             </Link>
             <Link href="/about" className="hover:underline">

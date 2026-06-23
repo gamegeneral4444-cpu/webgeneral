@@ -29,7 +29,8 @@ export function ImageManager({ albumId, images }: { albumId: string; images: Gal
   function saveCaption(imageId: string) {
     startTransition(async () => {
       const result = await updateGalleryImage(imageId, albumId, captions[imageId] ?? "");
-      result.ok ? toast.success("บันทึกคำบรรยายแล้ว") : toast.error(result.error ?? "เกิดข้อผิดพลาด");
+      if (result.ok) toast.success("บันทึกคำบรรยายแล้ว");
+      else toast.error(result.error ?? "เกิดข้อผิดพลาด");
     });
   }
 

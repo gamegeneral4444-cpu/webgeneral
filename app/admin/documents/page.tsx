@@ -16,7 +16,7 @@ import { adminListDocuments } from "@/lib/admin-data";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { canDelete } from "@/lib/permissions";
 import { deleteDocument } from "@/lib/actions/documents";
-import { formatThaiDate, formatFileSize, fileExtLabel, formatNumber } from "@/lib/format";
+import { formatFileSize, fileExtLabel, formatNumber } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "จัดการเอกสาร" };

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_Thai, Sarabun } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SITE } from "@/lib/constants";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const notoSansThai = Noto_Sans_Thai({
@@ -49,6 +50,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
+        <Analytics />
         <Toaster position="top-right" richColors closeButton />
       </body>
     </html>

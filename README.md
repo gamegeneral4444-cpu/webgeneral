@@ -74,6 +74,8 @@ npm run dev
    supabase/migrations/0001_init_schema.sql
    supabase/migrations/0002_rls_policies.sql
    supabase/migrations/0003_storage.sql
+   supabase/migrations/0004_admin_cms_audit.sql
+   supabase/migrations/0005_analytics.sql
    supabase/seed.sql           ← ข้อมูลตั้งต้น (ไม่บังคับ)
    ```
    (หรือใช้ Supabase CLI: `supabase db push` แล้ว `supabase db execute -f supabase/seed.sql`)
@@ -132,3 +134,50 @@ proxy.ts       Next.js 16 Proxy (refresh session + ป้องกัน /admin)
 | ลบข่าว-เอกสาร | ✅ | ✅ | ❌ | ❌ |
 | จัดการบริการ/บุคลากร/ตั้งค่า | ✅ | ✅ | ❌ | ❌ |
 | จัดการผู้ใช้งาน | ✅ | ❌ | ❌ | ❌ |
+
+---
+
+## การตรวจสอบก่อน deploy
+
+```powershell
+npm install
+npm test
+npm run lint
+npm run build
+```
+
+## Supabase migrations
+
+ใช้ migration ตามลำดับใน `supabase/migrations` โดยเฉพาะ:
+
+1. `0004_admin_cms_audit.sql` เพิ่ม audit trigger, activity summary และ transaction เรียงรูป
+2. `0005_analytics.sql` เพิ่มสถิติ page views แบบรวมรายวัน
+
+โปรเจกต์นี้ยังไม่ได้เก็บรหัสผ่านฐานข้อมูลหรือ Supabase access token ใน Git หาก CLI ยังไม่ได้ link ให้นำ SQL ทั้งสองไฟล์ไปรันใน Supabase SQL Editor ตามลำดับ แล้วรัน assertion ใน `supabase/tests` เพื่อตรวจสอบ
+
+## Environment variables
+
+ตั้งค่าทั้ง Preview และ Production ใน Vercel:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (server only)
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_SITE_NAME`
+- `NEXT_PUBLIC_VERCEL_PROJECT_URL` (optional)
+
+ห้าม prefix service role key ด้วย `NEXT_PUBLIC_` และห้าม commit `.env.local`
+
+## Analytics
+
+เปิด Web Analytics ใน Vercel Project Settings ตัว `<Analytics />` ถูกติดตั้งที่ root layout แล้ว Dashboard ใช้ข้อมูลรวมรายวันจาก Supabase และไม่เก็บ raw IP, cookie ID, visitor ID หรือ full user agent
+
+หลัง deploy ให้เปิดหน้าสาธารณะอย่างน้อยสองหน้า ตรวจว่า `POST /api/analytics/page-view` ตอบ `204` และดูว่า `analytics_daily` เพิ่มขึ้น จากนั้นตรวจกราฟใน `/admin`
+
+## Smoke test หลัง deploy
+
+- `/`, `/news`, `/downloads`, `/services`, `/gallery`, `/privacy`, `/login` ตอบสำเร็จ
+- ผู้ใช้ที่ไม่ login เข้า `/admin` แล้วถูกส่งไป `/login`
+- role แต่ละระดับเห็นเมนูและ action ตามสิทธิ์
+- เพิ่ม/แก้ไขข้อมูลทดสอบหนึ่งรายการแล้วเห็น activity log
+- ตรวจ Vercel Runtime Logs ว่าไม่มี 5xx ใหม่
