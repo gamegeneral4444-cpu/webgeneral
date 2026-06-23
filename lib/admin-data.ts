@@ -13,6 +13,7 @@ import type {
   CategoryWithCount,
 } from "@/types/database";
 import { CATEGORY_CONFIG, type CategoryTable } from "@/lib/actions/category-config";
+import { sanitizeAuditData } from "@/lib/audit";
 
 async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   try {
@@ -170,6 +171,36 @@ export async function adminListRecentAudit(limit = 6): Promise<AuditSummary[]> {
     if (error) return [];
     return (data as AuditSummary[]) ?? [];
   }, []);
+}
+
+export async function adminListAuditLogs(options: { page?: number; action?: string; table?: string } = {}) {
+  return safe(async () => {
+    const page = Math.max(options.page ?? 1, 1);
+    const pageSize = 20;
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc("list_audit_summaries", {
+      result_limit: pageSize,
+      result_offset: (page - 1) * pageSize,
+      action_filter: options.action || null,
+      table_filter: options.table || null,
+    });
+    if (error) return { rows: [], total: 0, page, pageSize };
+    const rows = (data as (AuditSummary & { total_count?: number })[]) ?? [];
+    return { rows, total: Number(rows[0]?.total_count ?? 0), page, pageSize };
+  }, { rows: [] as AuditSummary[], total: 0, page: 1, pageSize: 20 });
+}
+
+export async function adminListAuditDetails(ids: string[]): Promise<Record<string, { old_data: unknown; new_data: unknown }>> {
+  return safe(async () => {
+    if (ids.length === 0) return {};
+    const supabase = await createClient();
+    const { data, error } = await supabase.from("audit_logs").select("id,old_data,new_data").in("id", ids);
+    if (error) return {};
+    return Object.fromEntries((data ?? []).map((row) => [row.id, {
+      old_data: sanitizeAuditData(row.old_data),
+      new_data: sanitizeAuditData(row.new_data),
+    }]));
+  }, {});
 }
 
 export async function adminListAnalytics(days = 30): Promise<AnalyticsDaily[]> {
