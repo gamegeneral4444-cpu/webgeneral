@@ -71,6 +71,15 @@ export const galleryAlbumSchema = z.object({
 });
 export type GalleryAlbumInput = z.infer<typeof galleryAlbumSchema>;
 
+export const categorySchema = z.object({
+  name: z.string().trim().min(1, "กรุณากรอกชื่อหมวดหมู่").max(120),
+  slug,
+  description: z.string().max(500).optional().or(z.literal("")),
+  sort_order: z.coerce.number().int().min(0).default(0),
+  is_active: z.boolean().default(true),
+});
+export type CategoryInput = z.infer<typeof categorySchema>;
+
 export const settingsSchema = z.object({
   site_name: z.string().min(1, "กรุณากรอกชื่อเว็บไซต์"),
   school_name: z.string().optional().or(z.literal("")),

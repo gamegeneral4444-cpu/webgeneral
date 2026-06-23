@@ -10,7 +10,9 @@ import type {
   Profile,
   AuditSummary,
   AnalyticsDaily,
+  CategoryWithCount,
 } from "@/types/database";
+import { CATEGORY_CONFIG, type CategoryTable } from "@/lib/actions/category-config";
 
 async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   try {
@@ -121,6 +123,22 @@ export async function adminListCategories(table: string): Promise<Category[]> {
     const supabase = await createClient();
     const { data } = await supabase.from(table).select("*").order("sort_order");
     return (data as Category[]) ?? [];
+  }, []);
+}
+
+export async function adminListCategoriesWithCount(table: CategoryTable): Promise<CategoryWithCount[]> {
+  return safe(async () => {
+    const supabase = await createClient();
+    const { data, error } = await supabase.from(table).select("*").order("sort_order");
+    if (error) return [];
+    const categories = (data as Category[]) ?? [];
+    return Promise.all(categories.map(async (category) => {
+      const { count } = await supabase
+        .from(CATEGORY_CONFIG[table].foreignTable)
+        .select("id", { count: "exact", head: true })
+        .eq("category_id", category.id);
+      return { ...category, usage_count: count ?? 0 };
+    }));
   }, []);
 }
 

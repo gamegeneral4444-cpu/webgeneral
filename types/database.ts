@@ -24,6 +24,10 @@ export interface Category {
   created_at: string;
 }
 
+export interface CategoryWithCount extends Category {
+  usage_count: number;
+}
+
 export interface News {
   id: string;
   title: string;

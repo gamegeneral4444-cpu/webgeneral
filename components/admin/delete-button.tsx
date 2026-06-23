@@ -25,11 +25,13 @@ export function DeleteButton({
   itemName,
   label = "ลบ",
   iconOnly,
+  disabled = false,
 }: {
   action: () => Promise<ActionResult>;
   itemName: string;
   label?: string;
   iconOnly?: boolean;
+  disabled?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
 
@@ -48,7 +50,7 @@ export function DeleteButton({
           variant="outline"
           size={iconOnly ? "icon" : "sm"}
           className="gap-1.5 text-destructive hover:bg-destructive/10 hover:text-destructive"
-          disabled={pending}
+          disabled={pending || disabled}
         >
           {pending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
           {!iconOnly && label}
