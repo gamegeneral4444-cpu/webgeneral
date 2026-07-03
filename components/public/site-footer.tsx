@@ -1,11 +1,16 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin, Clock, MapPinned } from "lucide-react";
 import { FacebookIcon, LineIcon, YoutubeIcon } from "@/components/brand-icons";
+import { safeHttpUrl } from "@/lib/social";
 import type { SiteSettings } from "@/types/database";
 
 export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
   const siteName = settings?.site_name ?? "กลุ่มบริหารงานทั่วไป";
   const schoolName = settings?.school_name ?? "โรงเรียนตัวอย่างวิทยา";
+  const facebookHref = safeHttpUrl(settings?.facebook_url);
+  const lineValue = settings?.line_url?.trim() || "";
+  const lineHref = safeHttpUrl(lineValue);
+  const youtubeHref = safeHttpUrl(settings?.youtube_url);
 
   return (
     <footer className="mt-auto bg-[#0f172a] text-slate-300">
@@ -49,10 +54,10 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
         <div>
           <h2 className="mb-4 text-base font-bold text-white">ติดตามเรา</h2>
           <ul className="space-y-3 text-sm">
-            {settings?.facebook_url && (
+            {facebookHref && (
               <li>
                 <a
-                  href={settings.facebook_url}
+                  href={facebookHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 text-slate-400 transition-colors hover:text-white"
@@ -64,22 +69,45 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
                 </a>
               </li>
             )}
-            <li>
-              <span className="inline-flex items-center gap-3 text-slate-400">
-                <span className="grid size-8 place-items-center rounded-full bg-[#06C755] text-white">
-                  <LineIcon className="size-4" />
-                </span>
-                @exampleschool
-              </span>
-            </li>
-            <li>
-              <span className="inline-flex items-center gap-3 text-slate-400">
-                <span className="grid size-8 place-items-center rounded-full bg-[#FF0000] text-white">
-                  <YoutubeIcon className="size-4" />
-                </span>
-                {schoolName}
-              </span>
-            </li>
+            {lineValue && (
+              <li>
+                {lineHref ? (
+                  <a
+                    href={lineHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 text-slate-400 transition-colors hover:text-white"
+                  >
+                    <span className="grid size-8 place-items-center rounded-full bg-[#06C755] text-white">
+                      <LineIcon className="size-4" />
+                    </span>
+                    {schoolName}
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center gap-3 text-slate-400">
+                    <span className="grid size-8 place-items-center rounded-full bg-[#06C755] text-white">
+                      <LineIcon className="size-4" />
+                    </span>
+                    {lineValue}
+                  </span>
+                )}
+              </li>
+            )}
+            {youtubeHref && (
+              <li>
+                <a
+                  href={youtubeHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 text-slate-400 transition-colors hover:text-white"
+                >
+                  <span className="grid size-8 place-items-center rounded-full bg-[#FF0000] text-white">
+                    <YoutubeIcon className="size-4" />
+                  </span>
+                  {schoolName}
+                </a>
+              </li>
+            )}
           </ul>
         </div>
 

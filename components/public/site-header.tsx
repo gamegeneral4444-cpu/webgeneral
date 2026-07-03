@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, Phone, Mail, MapPin, Search, GraduationCap } from "lucide-react";
@@ -63,8 +64,19 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
-            <span className="grid size-12 place-items-center rounded-full bg-[#0f172a] text-gold shadow-sm ring-2 ring-gold/40">
-              <GraduationCap className="size-6" aria-hidden />
+            <span className="relative grid size-12 place-items-center overflow-hidden rounded-full bg-soft-gold text-primary shadow-sm ring-2 ring-gold/40">
+              {settings?.logo_url ? (
+                <Image
+                  src={settings.logo_url}
+                  alt={siteName}
+                  fill
+                  sizes="48px"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <GraduationCap className="size-6" aria-hidden />
+              )}
             </span>
             <span className="flex flex-col leading-tight">
               <span className="text-lg font-bold text-[#0f172a] sm:text-xl">{siteName}</span>

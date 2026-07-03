@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, UserRound } from "lucide-react";
+import { getStaffImageSrc, getStaffImageStyle } from "@/lib/staff-image";
 import type { Staff } from "@/types/database";
 
 export function RecentStaff({ rows }: { rows: Staff[] }) {
@@ -15,7 +16,18 @@ export function RecentStaff({ rows }: { rows: Staff[] }) {
           {rows.slice(0, 4).map((staff) => (
             <li key={staff.id} className="flex items-center gap-3 py-3">
               <span className="relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-slate-100 text-slate-500">
-                {staff.image_url ? <Image src={staff.image_url} alt="" fill sizes="40px" className="object-cover" /> : <UserRound className="size-5" aria-hidden />}
+                {staff.image_url ? (
+                  <Image
+                    src={getStaffImageSrc(staff)}
+                    alt=""
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                    style={getStaffImageStyle(staff)}
+                  />
+                ) : (
+                  <UserRound className="size-5" aria-hidden />
+                )}
               </span>
               <div className="min-w-0"><p className="truncate text-sm font-semibold text-[var(--admin-ink)]">{staff.full_name}</p><p className="truncate text-xs text-muted-foreground">{staff.position}</p></div>
             </li>

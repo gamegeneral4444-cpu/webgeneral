@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { UploadCloud, X, Loader2, FileCheck2 } from "lucide-react";
+import { FileCheck2, Loader2, UploadCloud, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -22,11 +22,9 @@ export function Uploader({
   kind?: UploadKind;
   value?: string;
   onChange: (url: string) => void;
-  /** สำหรับเอกสาร: ส่งชื่อ/ชนิด/ขนาดไฟล์กลับ */
   onMeta?: (meta: { name: string; type: string; size: number }) => void;
 }) {
   const rules = UPLOAD_RULES[kind];
-  const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
   async function handleFile(file: File) {
@@ -49,6 +47,7 @@ export function Uploader({
         upsert: false,
       });
       if (error) throw error;
+
       const { data } = supabase.storage.from(bucket).getPublicUrl(path);
       onChange(data.publicUrl);
       onMeta?.({ name: file.name, type: file.type, size: file.size });
@@ -60,22 +59,26 @@ export function Uploader({
     }
   }
 
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) void handleFile(file);
+    e.target.value = "";
+  }
+
+  const fileInput = (
+    <input
+      type="file"
+      accept={rules.accept.join(",")}
+      disabled={uploading}
+      onChange={onFileChange}
+      className="block w-full max-w-md cursor-pointer rounded-md border border-input bg-background text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-60"
+    />
+  );
+
   return (
     <div className="space-y-2">
-      <input
-        ref={inputRef}
-        type="file"
-        accept={rules.accept.join(",")}
-        className="hidden"
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          if (f) handleFile(f);
-          e.target.value = "";
-        }}
-      />
-
       {value ? (
-        <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-muted/30 p-3">
           {kind === "image" ? (
             <div className="relative size-16 shrink-0 overflow-hidden rounded-md border bg-background">
               <Image src={value} alt="ตัวอย่าง" fill sizes="64px" className="object-cover" />
@@ -83,34 +86,40 @@ export function Uploader({
           ) : (
             <FileCheck2 className="size-8 shrink-0 text-emerald-600" aria-hidden />
           )}
-          <a href={value} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 truncate text-sm text-primary hover:underline">
+          <a
+            href={value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="min-w-0 flex-1 truncate text-sm text-primary hover:underline"
+          >
             {value}
           </a>
           <Button type="button" variant="ghost" size="icon" onClick={() => onChange("")} aria-label="ลบไฟล์">
             <X className="size-4" />
           </Button>
+          <div className="basis-full">{fileInput}</div>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading}
+        <div
           className={cn(
-            "flex w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed bg-muted/20 px-4 py-8 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-accent/40",
+            "flex w-full flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-muted/20 px-4 py-8 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-accent/40",
+            uploading && "opacity-70",
           )}
         >
           {uploading ? (
             <>
-              <Loader2 className="size-6 animate-spin text-primary" aria-hidden /> กำลังอัปโหลด...
+              <Loader2 className="size-6 animate-spin text-primary" aria-hidden />
+              กำลังอัปโหลด...
             </>
           ) : (
             <>
               <UploadCloud className="size-7 text-primary" aria-hidden />
-              <span className="font-medium text-foreground">คลิกเพื่ออัปโหลด</span>
+              <span className="font-medium text-foreground">เลือกไฟล์เพื่ออัปโหลด</span>
               <span className="text-xs">{rules.label}</span>
+              {fileInput}
             </>
           )}
-        </button>
+        </div>
       )}
     </div>
   );

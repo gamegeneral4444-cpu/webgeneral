@@ -15,6 +15,7 @@ import { AdminPageHeader } from "@/components/admin/page-header";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { adminListStaff } from "@/lib/admin-data";
 import { deleteStaff } from "@/lib/actions/staff";
+import { getStaffImageSrc, getStaffImageStyle } from "@/lib/staff-image";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "จัดการบุคลากร" };
@@ -48,7 +49,14 @@ export default async function AdminStaffPage() {
                 <TableCell>
                   <div className="relative size-10 overflow-hidden rounded-full bg-muted">
                     {s.image_url ? (
-                      <Image src={s.image_url} alt={s.full_name} fill sizes="40px" className="object-cover" />
+                      <Image
+                        src={getStaffImageSrc(s)}
+                        alt={s.full_name}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                        style={getStaffImageStyle(s)}
+                      />
                     ) : (
                       <div className="grid h-full place-items-center text-muted-foreground">
                         <User className="size-5" aria-hidden />

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type {
   News,
@@ -24,13 +25,15 @@ async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   }
 }
 
-export async function getSettings(): Promise<SiteSettings | null> {
+// ห่อด้วย cache() เพื่อ dedupe query เมื่อถูกเรียกหลายครั้งใน request เดียว
+// (generateMetadata ใน root layout + PublicLayout เรียก getSettings ทั้งคู่)
+export const getSettings = cache(async (): Promise<SiteSettings | null> => {
   return safe(async () => {
     const supabase = await createClient();
     const { data } = await supabase.from("site_settings").select("*").limit(1).maybeSingle();
     return (data as SiteSettings) ?? null;
   }, null);
-}
+});
 
 export async function getPublishedNews(opts?: {
   limit?: number;

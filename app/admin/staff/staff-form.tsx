@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +17,7 @@ import { Uploader } from "@/components/admin/uploader";
 import { staffSchema, type StaffInput } from "@/lib/validations";
 import { BUCKETS } from "@/lib/constants";
 import { createStaff, updateStaff } from "@/lib/actions/staff";
+import { decorateStaffImageUrl, getStaffImageCrop, stripStaffImageCrop } from "@/lib/staff-image";
 import type { Staff } from "@/types/database";
 
 type FormValues = z.input<typeof staffSchema>;
@@ -29,7 +31,8 @@ function toFormData(v: FormValues): FormData {
 export function StaffForm({ initial }: { initial?: Staff }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [image, setImage] = useState(initial?.image_url ?? "");
+  const initialCrop = getStaffImageCrop(initial);
+  const [image, setImage] = useState(stripStaffImageCrop(initial?.image_url));
 
   const {
     register,
@@ -47,16 +50,29 @@ export function StaffForm({ initial }: { initial?: Staff }) {
       phone: initial?.phone ?? "",
       email: initial?.email ?? "",
       image_url: initial?.image_url ?? "",
+      image_position_x: initialCrop.x,
+      image_position_y: initialCrop.y,
+      image_zoom: initialCrop.zoom,
       sort_order: initial?.sort_order ?? 0,
       is_active: initial?.is_active ?? true,
     },
   });
 
+  const imagePositionX = Number(watch("image_position_x") ?? 50);
+  const imagePositionY = Number(watch("image_position_y") ?? 50);
+  const imageZoom = Number(watch("image_zoom") ?? 1);
+
   function onSubmit(values: StaffInput) {
     startTransition(async () => {
+      const imageUrl = decorateStaffImageUrl(image || values.image_url || "", {
+        x: Number(values.image_position_x ?? 50),
+        y: Number(values.image_position_y ?? 50),
+        zoom: Number(values.image_zoom ?? 1),
+      });
+      const payload = { ...values, image_url: imageUrl };
       const res = initial
-        ? await updateStaff(initial.id, toFormData(values))
-        : await createStaff(toFormData(values));
+        ? await updateStaff(initial.id, toFormData(payload))
+        : await createStaff(toFormData(payload));
       if (res.ok) {
         toast.success(initial ? "บันทึกแล้ว" : "เพิ่มบุคลากรเรียบร้อยแล้ว");
         router.push("/admin/staff");
@@ -76,10 +92,59 @@ export function StaffForm({ initial }: { initial?: Staff }) {
           kind="image"
           value={image}
           onChange={(url) => {
-            setImage(url);
-            setValue("image_url", url);
+            const src = stripStaffImageCrop(url);
+            setImage(src);
+            setValue("image_url", src, { shouldDirty: true, shouldValidate: true });
           }}
         />
+        <input type="hidden" {...register("image_url")} />
+        {image && (
+          <div className="mt-4 grid gap-4 rounded-lg border bg-muted/20 p-4 sm:grid-cols-[160px_1fr]">
+            <div className="grid justify-center gap-2 text-center text-xs text-muted-foreground">
+              <div className="relative size-36 overflow-hidden rounded-full bg-background ring-2 ring-soft-gold">
+                <Image
+                  src={image}
+                  alt="ตัวอย่างตำแหน่งรูป"
+                  fill
+                  sizes="144px"
+                  className="object-cover"
+                  style={{
+                    objectPosition: `${imagePositionX}% ${imagePositionY}%`,
+                    transform: `scale(${imageZoom})`,
+                    transformOrigin: `${imagePositionX}% ${imagePositionY}%`,
+                  }}
+                />
+              </div>
+              ตัวอย่างรูปบนหน้าเว็บ
+            </div>
+            <div className="grid gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="image_position_x">ขยับซ้าย-ขวา</Label>
+                <Input id="image_position_x" type="range" min="0" max="100" step="1" {...register("image_position_x")} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="image_position_y">ขยับขึ้น-ลง</Label>
+                <Input id="image_position_y" type="range" min="0" max="100" step="1" {...register("image_position_y")} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="image_zoom">ซูมใบหน้า</Label>
+                <Input id="image_zoom" type="range" min="1" max="2" step="0.05" {...register("image_zoom")} />
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-fit"
+                onClick={() => {
+                  setValue("image_position_x", 50, { shouldDirty: true, shouldValidate: true });
+                  setValue("image_position_y", 50, { shouldDirty: true, shouldValidate: true });
+                  setValue("image_zoom", 1, { shouldDirty: true, shouldValidate: true });
+                }}
+              >
+                รีเซ็ตตำแหน่ง
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">

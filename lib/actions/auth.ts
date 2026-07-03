@@ -30,8 +30,20 @@ export async function loginAction(
     return { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" };
   }
 
-  const redirectTo = (formData.get("redirect") as string) || "/admin";
-  redirect(redirectTo);
+  redirect(safeRedirect(formData.get("redirect")));
+}
+
+/**
+ * อนุญาตเฉพาะ path ภายในเว็บไซต์ — กัน open redirect ออกไปเว็บภายนอก
+ * (next/navigation redirect() ยอมรับ absolute URL และ redirect ออกนอกได้)
+ */
+function safeRedirect(value: FormDataEntryValue | null): string {
+  if (typeof value !== "string") return "/admin";
+  // ต้องขึ้นต้นด้วย "/" เดี่ยว และไม่ใช่ "//" (protocol-relative) หรือมี "\" หลอกตา
+  if (!value.startsWith("/") || value.startsWith("//") || value.includes("\\")) {
+    return "/admin";
+  }
+  return value;
 }
 
 export async function logoutAction() {

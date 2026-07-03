@@ -111,6 +111,9 @@ export interface Staff {
   phone: string | null;
   email: string | null;
   image_url: string | null;
+  image_position_x?: number | null;
+  image_position_y?: number | null;
+  image_zoom?: number | null;
   sort_order: number;
   is_active: boolean;
   created_at: string;
@@ -122,11 +125,14 @@ export interface SiteSettings {
   site_name: string;
   school_name: string | null;
   logo_url: string | null;
+  banner_image_url: string | null;
   primary_color: string | null;
   address: string | null;
   phone: string | null;
   email: string | null;
   facebook_url: string | null;
+  line_url: string | null;
+  youtube_url: string | null;
   map_embed_url: string | null;
   office_hours: string | null;
   updated_by: string | null;

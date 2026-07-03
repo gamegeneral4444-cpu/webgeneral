@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   Download,
@@ -8,10 +9,6 @@ import {
   Coffee,
   FileText,
   Headphones,
-  Heart,
-  ShieldCheck,
-  Zap,
-  Award,
   Users,
   Landmark,
 } from "lucide-react";
@@ -21,9 +18,12 @@ import { DocumentCard } from "@/components/public/document-card";
 import { GalleryCard } from "@/components/public/gallery-card";
 import { StaffCard } from "@/components/public/staff-card";
 import { SectionHeading, EmptyState } from "@/components/public/section";
+import { LucideIcon } from "@/components/lucide-icon";
+import { getBannerImageStyle, stripBannerImageCrop } from "@/lib/banner-image";
 import {
   getPublishedNews,
   getDocuments,
+  getServices,
   getAlbums,
   getStaff,
   getSettings,
@@ -31,7 +31,7 @@ import {
 
 export const revalidate = 60;
 
-const QUICK_SERVICES = [
+const FALLBACK_QUICK_SERVICES = [
   { icon: Building2, label: "ขอใช้อาคารสถานที่", href: "/services" },
   { icon: Car, label: "จองรถราชการ", href: "/services" },
   { icon: Wrench, label: "แจ้งซ่อม", href: "/services" },
@@ -40,21 +40,16 @@ const QUICK_SERVICES = [
   { icon: Headphones, label: "ติดต่อฝ่ายงานทั่วไป", href: "/contact" },
 ];
 
-const CORE_VALUES = [
-  { icon: Heart, label: "บริการด้วยใจ" },
-  { icon: ShieldCheck, label: "โปร่งใส" },
-  { icon: Zap, label: "รวดเร็ว" },
-  { icon: Award, label: "มุ่งสู่ความเป็นเลิศ" },
-];
-
 export default async function HomePage() {
-  const [news, documents, albums, staff, settings] = await Promise.all([
+  const [news, documents, services, albums, staff, settings] = await Promise.all([
     getPublishedNews({ limit: 3 }),
     getDocuments(),
+    getServices(),
     getAlbums(),
     getStaff(),
     getSettings(),
   ]);
+  const quickServices = services.slice(0, 6);
 
   return (
     <>
@@ -75,12 +70,13 @@ export default async function HomePage() {
           aria-hidden
         />
 
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 pb-24 pt-14 lg:grid-cols-2 lg:pb-28 lg:pt-20">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 lg:grid-cols-2 lg:py-20">
           {/* ซ้าย: ข้อความ */}
           <div>
             <h1 className="text-4xl font-bold leading-tight text-[#0f172a] sm:text-5xl">
               ยินดีต้อนรับสู่
-              <span className="mt-1 block bg-gradient-to-r from-primary to-[#d97706] bg-clip-text text-5xl text-transparent sm:text-6xl">
+              {/* pt/pb + leading เผื่อพื้นที่ให้วรรณยุกต์ที่ซ้อนบนสระ (เช่น "ทั่ว") ไม่ถูก bg-clip-text ตัดทิ้ง */}
+              <span className="mt-1 block bg-gradient-to-r from-primary to-[#d97706] bg-clip-text pb-1 pt-2 text-5xl leading-[1.3] text-transparent sm:text-6xl">
                 {settings?.site_name ?? "กลุ่มบริหารงานทั่วไป"}
               </span>
             </h1>
@@ -105,6 +101,17 @@ export default async function HomePage() {
           {/* ขวา: ภาพประกอบอาคาร (illustration panel) */}
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border bg-gradient-to-br from-sky-100 via-amber-50 to-emerald-50 shadow-xl">
+              {settings?.banner_image_url && (
+                <Image
+                  src={stripBannerImageCrop(settings.banner_image_url)}
+                  alt={settings?.site_name ?? "แบนเนอร์หน้าแรก"}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="z-10 object-cover"
+                  style={getBannerImageStyle(settings.banner_image_url)}
+                />
+              )}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(250,204,21,0.25),transparent_55%)]" aria-hidden />
               {/* ท้องฟ้า + อาคาร */}
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-center gap-2 p-6">
@@ -124,48 +131,59 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
-
-        {/* เส้นโค้งทองด้านล่าง */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-r from-gold/40 via-primary/30 to-transparent"
-          style={{ clipPath: "ellipse(80% 100% at 70% 100%)" }}
-          aria-hidden
-        />
-
-        {/* การ์ดค่านิยมลอย */}
-        <div className="relative mx-auto -mb-10 max-w-5xl px-4">
-          <div className="grid grid-cols-2 gap-3 rounded-2xl border bg-card/95 p-4 shadow-lg backdrop-blur sm:grid-cols-4">
-            {CORE_VALUES.map((v) => (
-              <div key={v.label} className="flex items-center gap-3 rounded-xl px-3 py-2">
-                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-soft-gold text-primary ring-1 ring-primary/10">
-                  <v.icon className="size-5" aria-hidden />
-                </span>
-                <span className="text-sm font-semibold text-[#0f172a]">{v.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* ===== บริการด่วน ===== */}
-      <section className="mx-auto max-w-7xl px-4 pb-14 pt-20">
+      <section className="mx-auto max-w-7xl px-4 py-14">
         <SectionHeading title="บริการด่วน" subtitle="เข้าถึงบริการที่ใช้บ่อยได้ทันที" moreHref="/services" moreLabel="ดูบริการทั้งหมด" />
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {QUICK_SERVICES.map((s) => (
-            <Link
-              key={s.label}
-              href={s.href}
-              className="group flex flex-col items-center gap-3 rounded-xl border bg-card p-5 text-center shadow-sm transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-md"
-            >
-              <span className="grid size-14 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                <s.icon className="size-7" aria-hidden />
-              </span>
-              <span className="text-sm font-medium text-[#0f172a] group-hover:text-primary">
-                {s.label}
-              </span>
-              <span className="h-0.5 w-8 rounded-full bg-gold transition-all group-hover:w-12" aria-hidden />
-            </Link>
-          ))}
+          {quickServices.length
+            ? quickServices.map((service) => {
+                const isInternal = service.url.startsWith("/");
+                const card = (
+                  <>
+                    <span className="grid size-14 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                      <LucideIcon name={service.icon} className="size-7" aria-hidden />
+                    </span>
+                    <span className="text-sm font-medium text-[#0f172a] group-hover:text-primary">
+                      {service.name}
+                    </span>
+                    <span className="h-0.5 w-8 rounded-full bg-gold transition-all group-hover:w-12" aria-hidden />
+                  </>
+                );
+                const className = "group flex flex-col items-center gap-3 rounded-xl border bg-card p-5 text-center shadow-sm transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-md";
+
+                return isInternal ? (
+                  <Link key={service.id} href={service.url} className={className}>
+                    {card}
+                  </Link>
+                ) : (
+                  <a
+                    key={service.id}
+                    href={service.url}
+                    target={service.is_external ? "_blank" : undefined}
+                    rel={service.is_external ? "noopener noreferrer" : undefined}
+                    className={className}
+                  >
+                    {card}
+                  </a>
+                );
+              })
+            : FALLBACK_QUICK_SERVICES.map((s) => (
+                <Link
+                  key={s.label}
+                  href={s.href}
+                  className="group flex flex-col items-center gap-3 rounded-xl border bg-card p-5 text-center shadow-sm transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-md"
+                >
+                  <span className="grid size-14 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                    <s.icon className="size-7" aria-hidden />
+                  </span>
+                  <span className="text-sm font-medium text-[#0f172a] group-hover:text-primary">
+                    {s.label}
+                  </span>
+                  <span className="h-0.5 w-8 rounded-full bg-gold transition-all group-hover:w-12" aria-hidden />
+                </Link>
+              ))}
         </div>
       </section>
 

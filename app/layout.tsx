@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_Thai, Sarabun } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SITE } from "@/lib/constants";
+import { getSettings } from "@/lib/data";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -19,23 +20,31 @@ const sarabun = Sarabun({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
-  title: {
-    default: `${SITE.name} | ${SITE.schoolName}`,
-    template: `%s | ${SITE.name}`,
-  },
-  description: SITE.description,
-  openGraph: {
-    title: SITE.name,
+export async function generateMetadata(): Promise<Metadata> {
+  // ดึงชื่อจาก DB ก่อน เพื่อให้ชื่อบนแท็บตรงกับที่ตั้งในหน้าตั้งค่า admin
+  // ถ้า DB ไม่มีค่า/เชื่อมไม่ได้ จะ fallback ไปใช้ค่าคงที่ที่ถูกต้อง
+  const settings = await getSettings();
+  const siteName = settings?.site_name?.trim() || SITE.name;
+  const schoolName = settings?.school_name?.trim() || SITE.schoolName;
+
+  return {
+    metadataBase: new URL(SITE.url),
+    title: {
+      default: `${siteName} | ${schoolName}`,
+      template: `%s | ${siteName}`,
+    },
     description: SITE.description,
-    url: SITE.url,
-    siteName: SITE.name,
-    locale: "th_TH",
-    type: "website",
-  },
-  robots: { index: true, follow: true },
-};
+    openGraph: {
+      title: siteName,
+      description: SITE.description,
+      url: SITE.url,
+      siteName,
+      locale: "th_TH",
+      type: "website",
+    },
+    robots: { index: true, follow: true },
+  };
+}
 
 export default function RootLayout({
   children,

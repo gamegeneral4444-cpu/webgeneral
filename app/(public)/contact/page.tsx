@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import { Phone, Mail, MapPin, Clock, MapPinned } from "lucide-react";
-import { FacebookIcon } from "@/components/brand-icons";
+import { FacebookIcon, LineIcon, YoutubeIcon } from "@/components/brand-icons";
 import { PageHero } from "@/components/public/page-hero";
 import { getSettings } from "@/lib/data";
+import { safeHttpUrl } from "@/lib/social";
 
 export const metadata: Metadata = { title: "ติดต่อเรา" };
 export const revalidate = 300;
 
 export default async function ContactPage() {
   const s = await getSettings();
+  const facebookHref = safeHttpUrl(s?.facebook_url);
+  const lineValue = s?.line_url?.trim() || "";
+  const lineHref = safeHttpUrl(lineValue);
+  const youtubeHref = safeHttpUrl(s?.youtube_url);
   const items = [
     s?.address && { icon: MapPin, label: "ที่อยู่", value: s.address },
     s?.phone && { icon: Phone, label: "โทรศัพท์", value: s.phone, href: `tel:${s.phone}` },
@@ -44,9 +49,9 @@ export default async function ContactPage() {
               </div>
             ))}
 
-            {s?.facebook_url && (
+            {facebookHref && (
               <a
-                href={s.facebook_url}
+                href={facebookHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 rounded-xl border bg-card p-5 shadow-sm transition-colors hover:border-primary/30"
@@ -57,6 +62,51 @@ export default async function ContactPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Facebook</p>
                   <p className="font-medium text-foreground">{s?.school_name ?? "เพจโรงเรียน"}</p>
+                </div>
+              </a>
+            )}
+
+            {lineValue &&
+              (lineHref ? (
+                <a
+                  href={lineHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 rounded-xl border bg-card p-5 shadow-sm transition-colors hover:border-primary/30"
+                >
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#06C755] text-white">
+                    <LineIcon className="size-6" />
+                  </span>
+                  <div>
+                    <p className="text-sm text-muted-foreground">LINE</p>
+                    <p className="font-medium text-foreground">{s?.school_name ?? "เพิ่มเพื่อน"}</p>
+                  </div>
+                </a>
+              ) : (
+                <div className="flex items-center gap-4 rounded-xl border bg-card p-5 shadow-sm">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#06C755] text-white">
+                    <LineIcon className="size-6" />
+                  </span>
+                  <div>
+                    <p className="text-sm text-muted-foreground">LINE</p>
+                    <p className="font-medium text-foreground">{lineValue}</p>
+                  </div>
+                </div>
+              ))}
+
+            {youtubeHref && (
+              <a
+                href={youtubeHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 rounded-xl border bg-card p-5 shadow-sm transition-colors hover:border-primary/30"
+              >
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#FF0000] text-white">
+                  <YoutubeIcon className="size-6" />
+                </span>
+                <div>
+                  <p className="text-sm text-muted-foreground">YouTube</p>
+                  <p className="font-medium text-foreground">{s?.school_name ?? "ช่อง YouTube"}</p>
                 </div>
               </a>
             )}

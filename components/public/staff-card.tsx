@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Phone, Mail, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getStaffImageSrc, getStaffImageStyle } from "@/lib/staff-image";
 import type { Staff } from "@/types/database";
 
 export function StaffCard({
@@ -15,11 +16,12 @@ export function StaffCard({
       <div className="relative size-24 overflow-hidden rounded-full bg-muted ring-2 ring-soft-gold">
         {staff.image_url ? (
           <Image
-            src={staff.image_url}
+            src={getStaffImageSrc(staff)}
             alt={staff.full_name}
             fill
             sizes="96px"
             className="object-cover"
+            style={getStaffImageStyle(staff)}
           />
         ) : (
           <div className="grid h-full place-items-center text-muted-foreground">

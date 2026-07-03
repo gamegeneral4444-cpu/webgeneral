@@ -2,8 +2,13 @@
  * ค่าคงที่ส่วนกลางของเว็บไซต์
  * ใช้เป็น fallback เมื่อยังไม่ได้ตั้งค่า site_settings ในฐานข้อมูล
  */
+const DEFAULT_SITE_NAME = "กลุ่มบริหารงานทั่วไป";
+const envSiteName = process.env.NEXT_PUBLIC_SITE_NAME?.trim();
+
 export const SITE = {
-  name: process.env.NEXT_PUBLIC_SITE_NAME ?? "กลุ่มบริหารงานทั่วไป",
+  // ใช้ค่าจาก env เฉพาะเมื่อมีตัวอักษรจริง — กันกรณีค่าเพี้ยนตอน deploy
+  // (ภาษาไทยถูกแปลงเป็น "????" จาก console encoding) ที่จะทำให้ชื่อเว็บกลายเป็น ?????
+  name: envSiteName && /\p{L}/u.test(envSiteName) ? envSiteName : DEFAULT_SITE_NAME,
   schoolName: "โรงเรียนตัวอย่างวิทยา",
   description:
     "เว็บไซต์กลุ่มบริหารงานทั่วไป รวมข่าวประชาสัมพันธ์ ระบบบริการออนไลน์ ดาวน์โหลดเอกสาร และช่องทางติดต่อของโรงเรียน",
