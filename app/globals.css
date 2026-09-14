@@ -277,6 +277,23 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
+/* สถานะ hover ของกระจก
+   ต้องเขียนไว้ตรงนี้ ไม่ใช่ใช้ utility อย่าง hover:bg-white/15 เพราะคลาสกระจก
+   อยู่นอก @layer จึงชนะ utility ของ Tailwind ที่อยู่ใน @layer utilities เสมอ
+   ใส่ hover:bg-* ไปก็ไม่มีผล */
+.glass-hover {
+  transition: background 150ms ease;
+}
+
+.glass-hover:hover {
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.34) 0%,
+    rgba(255, 255, 255, 0.16) 60%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+}
+
 /* ขอบทองบาง ๆ ใช้คู่กับกระจกเมื่ออยากให้ขอบเป็นทองแทนที่จะเป็นขาว */
 .glass-edge-gold {
   border-color: rgba(230, 201, 128, 0.45);

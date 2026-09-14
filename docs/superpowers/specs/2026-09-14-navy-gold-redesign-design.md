@@ -101,7 +101,6 @@
 | แถบหัวเว็บเมื่อเลื่อนลง (sticky) | `components/public/site-header.tsx` |
 | การ์ด/ปุ่มในโซนฮีโร่ | `app/(public)/page.tsx` |
 | แถบ CTA ก่อนฟุตเตอร์ | `app/(public)/page.tsx` |
-| การ์ดในฟุตเตอร์ | `components/public/site-footer.tsx` |
 | กล่องฟอร์มหน้าเข้าสู่ระบบ | `app/login/` |
 | sidebar + แถบบนหลังบ้าน | `components/admin/admin-shell.tsx` |
 | แผ่นรองโลโก้ (ล.3) | `site-header.tsx`, `admin-shell.tsx` |

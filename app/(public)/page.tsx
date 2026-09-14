@@ -98,7 +98,7 @@ export default async function HomePage() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="glass-mirror-soft border-white/30 text-white hover:bg-white/15 hover:text-gold-light"
+                className="glass-mirror-soft glass-hover border-white/30 text-white hover:text-gold-light"
               >
                 <Link href="/downloads">
                   <Download className="size-4" aria-hidden /> ดาวน์โหลดเอกสาร
