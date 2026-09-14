@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, ExternalLink, Landmark, LogOut, Menu } from "lucide-react";
+import Image from "next/image";
+import { ChevronDown, ExternalLink, LogOut, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -18,6 +19,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { visibleNav } from "@/components/admin/admin-nav";
 import { ROLE_LABELS, type Role } from "@/lib/permissions";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { logoutAction } from "@/lib/actions/auth";
 
 function NavLinks({ role, onNavigate }: { role: Role; onNavigate?: () => void }) {
@@ -51,8 +53,8 @@ function NavLinks({ role, onNavigate }: { role: Role; onNavigate?: () => void })
 function SidebarBrand() {
   return (
     <Link href="/admin" className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-      <span className="grid size-12 shrink-0 place-items-center rounded-full border-2 border-[var(--admin-gold-bright)] bg-white/5 text-[var(--admin-gold-bright)] shadow-inner">
-        <Landmark className="size-6" aria-hidden />
+      <span className="glass-mirror-soft glass-edge-gold grid size-12 shrink-0 place-items-center rounded-xl">
+        <Image src="/logo.png" alt="" width={40} height={40} className="object-contain" />
       </span>
       <span className="leading-tight">
         <span className="block text-base font-bold text-white">Admin Dashboard</span>
@@ -105,7 +107,7 @@ export function AdminShell({
       </aside>
 
       <div className="flex min-h-dvh min-w-0 flex-col">
-        <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-3 border-b border-[var(--admin-border)] bg-white/95 px-4 shadow-sm backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-3 border-b border-[var(--admin-border)] bg-card/90 px-4 shadow-sm backdrop-blur-xl sm:px-6">
           <div className="flex items-center gap-2">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
@@ -134,12 +136,14 @@ export function AdminShell({
             </div>
           </div>
 
+          <div className="flex items-center gap-1">
+          <ThemeToggle className="text-[var(--admin-ink)]" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
                 aria-label="เปิดเมนูบัญชีผู้ใช้"
-                className="flex items-center gap-2 rounded-full border border-[var(--admin-border)] bg-white py-1 pl-1 pr-2 transition-colors hover:bg-amber-50 sm:pr-3"
+                className="flex items-center gap-2 rounded-full border border-[var(--admin-border)] bg-card py-1 pl-1 pr-2 transition-colors hover:bg-accent sm:pr-3"
               >
                 <Avatar className="size-8">
                   <AvatarFallback className="bg-[var(--admin-navy)] text-sm text-white">
@@ -174,6 +178,7 @@ export function AdminShell({
               </form>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </header>
 
         <main className="min-w-0 flex-1 p-4 sm:p-6 xl:p-7">{children}</main>

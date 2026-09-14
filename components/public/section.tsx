@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function SectionHeading({
@@ -41,9 +41,14 @@ export function SectionHeading({
 
 export function EmptyState({ title, description }: { title: string; description?: string }) {
   return (
-    <div className="rounded-xl border border-dashed bg-muted/30 p-10 text-center">
-      <p className="font-medium text-foreground">{title}</p>
-      {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-primary/25 bg-secondary p-10 text-center">
+      <span className="grid size-12 place-items-center rounded-full bg-soft-gold text-gold-dark ring-1 ring-gold/25">
+        <Inbox className="size-6" aria-hidden />
+      </span>
+      <div>
+        <p className="font-medium text-foreground">{title}</p>
+        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+      </div>
     </div>
   );
 }

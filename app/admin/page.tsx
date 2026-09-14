@@ -43,7 +43,7 @@ export default async function AdminDashboard() {
             <Link href="/admin/news/create" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-gradient-to-r from-[var(--admin-gold)] to-[var(--admin-gold-bright)] px-4 text-sm font-semibold text-[var(--admin-navy-strong)] shadow-sm hover:brightness-105">
               <Plus className="size-4" aria-hidden /> เพิ่มข่าวใหม่
             </Link>
-            <Link href="/admin/documents/create" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--admin-gold)] bg-white px-4 text-sm font-semibold text-[var(--admin-ink)] hover:bg-amber-50">
+            <Link href="/admin/documents/create" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--admin-gold)] bg-white px-4 text-sm font-semibold text-[var(--admin-ink)] hover:bg-accent">
               <FileUp className="size-4 text-[var(--admin-gold)]" aria-hidden /> อัปโหลดเอกสาร
             </Link>
           </div>

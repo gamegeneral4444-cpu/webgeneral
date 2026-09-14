@@ -7,7 +7,7 @@ import type { News, NewsStatus } from "@/types/database";
 
 const STATUS_STYLE: Record<NewsStatus, string> = {
   published: "bg-emerald-50 text-emerald-700",
-  draft: "bg-amber-50 text-amber-700",
+  draft: "bg-soft-gold text-gold-dark",
   archived: "bg-slate-100 text-slate-600",
 };
 
@@ -36,7 +36,7 @@ export function RecentNewsTable({ rows }: { rows: News[] }) {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {rows.slice(0, 5).map((news) => (
-                <tr key={news.id} className="hover:bg-amber-50/30">
+                <tr key={news.id} className="hover:bg-accent/40">
                   <td className="max-w-xs px-5 py-3 font-medium text-[var(--admin-ink)]"><span className="line-clamp-2">{news.title}</span></td>
                   <td className="px-3 py-3 text-slate-500">{news.category?.name ?? "ทั่วไป"}</td>
                   <td className="px-3 py-3"><Badge variant="secondary" className={STATUS_STYLE[news.status]}>{NEWS_STATUS[news.status]}</Badge></td>

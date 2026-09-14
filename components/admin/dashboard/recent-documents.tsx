@@ -14,7 +14,7 @@ export function RecentDocuments({ rows }: { rows: DocumentItem[] }) {
         <ul className="divide-y divide-slate-100">
           {rows.slice(0, 4).map((document) => (
             <li key={document.id} className="flex items-center gap-3 py-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-amber-50 text-[var(--admin-gold)]"><FileText className="size-4" aria-hidden /></span>
+              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-soft-gold text-gold-dark"><FileText className="size-4" aria-hidden /></span>
               <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium text-[var(--admin-ink)]">{document.title}</p><p className="text-xs text-muted-foreground">{fileExtLabel(document.file_name, document.file_type)} · {formatThaiDate(document.created_at)}</p></div>
             </li>
           ))}

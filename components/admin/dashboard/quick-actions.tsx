@@ -30,7 +30,7 @@ export function QuickActions({ role }: { role: Role }) {
             key={action.href}
             href={action.href}
             aria-label={action.label}
-            className="flex min-h-20 flex-col justify-center gap-2 rounded-lg border border-slate-200 px-3 py-3 text-sm font-medium text-[var(--admin-ink)] transition hover:border-[var(--admin-gold)] hover:bg-amber-50/50"
+            className="flex min-h-20 flex-col justify-center gap-2 rounded-lg border border-slate-200 px-3 py-3 text-sm font-medium text-[var(--admin-ink)] transition hover:border-[var(--admin-gold)] hover:bg-accent/60"
           >
             <action.icon className="size-5 text-[var(--admin-gold)]" aria-hidden />
             {action.label}

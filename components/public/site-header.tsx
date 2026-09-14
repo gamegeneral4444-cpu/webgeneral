@@ -4,8 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, Phone, Mail, MapPin, Search, GraduationCap } from "lucide-react";
+import { Menu, Phone, Mail, MapPin, Search } from "lucide-react";
 import { FacebookIcon, LineIcon, YoutubeIcon } from "@/components/brand-icons";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -23,17 +24,17 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
 
   return (
     <header className="sticky top-0 z-40 w-full">
-      {/* Top bar — โทนทอง */}
-      <div className="bg-gradient-to-r from-primary to-[#d97706] text-white">
+      {/* Top bar — กรมท่าเข้ม */}
+      <div className="bg-navy-deep text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-1.5 text-xs">
           <div className="flex items-center gap-4 overflow-hidden">
             {settings?.phone && (
-              <a href={`tel:${settings.phone}`} className="inline-flex items-center gap-1.5 hover:text-amber-100">
+              <a href={`tel:${settings.phone}`} className="inline-flex items-center gap-1.5 hover:text-gold-light">
                 <Phone className="size-3.5" aria-hidden /> {settings.phone}
               </a>
             )}
             {settings?.email && (
-              <a href={`mailto:${settings.email}`} className="hidden items-center gap-1.5 hover:text-amber-100 sm:inline-flex">
+              <a href={`mailto:${settings.email}`} className="hidden items-center gap-1.5 hover:text-gold-light sm:inline-flex">
                 <Mail className="size-3.5" aria-hidden /> {settings.email}
               </a>
             )}
@@ -60,27 +61,24 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
         </div>
       </div>
 
-      {/* Main header — พื้นขาว */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
+      {/* Main header — กระจกเงาพื้นกรมท่า ลอยทับเนื้อหาตอนเลื่อน */}
+      <div className="glass-navy border-b-[3px] border-gold text-white">
+        <div className="relative z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
-            <span className="relative grid size-12 place-items-center overflow-hidden rounded-full bg-soft-gold text-primary shadow-sm ring-2 ring-gold/40">
-              {settings?.logo_url ? (
-                <Image
-                  src={settings.logo_url}
-                  alt={siteName}
-                  fill
-                  sizes="48px"
-                  className="object-cover"
-                  priority
-                />
-              ) : (
-                <GraduationCap className="size-6" aria-hidden />
-              )}
+            {/* แผ่นกระจกมุมมน — ไม่ตัดฟันเฟืองรอบตราเหมือนกรอบวงกลม */}
+            <span className="glass-mirror-soft glass-edge-gold grid size-12 shrink-0 place-items-center rounded-xl">
+              <Image
+                src={settings?.logo_url || "/logo.png"}
+                alt={siteName}
+                width={40}
+                height={40}
+                className="size-10 object-contain"
+                priority
+              />
             </span>
             <span className="flex flex-col leading-tight">
-              <span className="text-lg font-bold text-[#0f172a] sm:text-xl">{siteName}</span>
-              <span className="text-xs text-muted-foreground">{schoolName}</span>
+              <span className="text-lg font-bold sm:text-xl">{siteName}</span>
+              <span className="text-xs text-gold-light">{schoolName}</span>
             </span>
           </Link>
 
@@ -90,8 +88,8 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "relative rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-primary",
-                  isActive(item.href) ? "text-primary" : "text-[#0f172a]/80",
+                  "relative rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-gold-light",
+                  isActive(item.href) ? "text-gold-light" : "text-white/85",
                 )}
               >
                 {item.label}
@@ -103,16 +101,23 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
             <Link
               href="/news"
               aria-label="ค้นหา"
-              className="ml-1 grid size-9 place-items-center rounded-full text-[#0f172a]/70 transition-colors hover:bg-accent hover:text-primary"
+              className="ml-1 grid size-9 place-items-center rounded-full text-white/75 transition-colors hover:bg-white/10 hover:text-gold-light"
             >
               <Search className="size-5" aria-hidden />
             </Link>
+            <ThemeToggle className="text-white/75 hover:bg-white/10 hover:text-gold-light" />
           </nav>
 
           <div className="flex items-center gap-2 lg:hidden">
+            <ThemeToggle className="text-white/75 hover:bg-white/10 hover:text-gold-light" />
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="เปิดเมนู">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="เปิดเมนู"
+                  className="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-gold-light"
+                >
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>

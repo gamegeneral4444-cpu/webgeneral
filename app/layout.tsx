@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Thai, Sarabun } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SITE } from "@/lib/constants";
 import { getSettings } from "@/lib/data";
@@ -41,6 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName,
       locale: "th_TH",
       type: "website",
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: siteName }],
     },
     robots: { index: true, follow: true },
   };
@@ -58,9 +60,11 @@ export default function RootLayout({
       className={`${notoSansThai.variable} ${sarabun.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
-        <Analytics />
-        <Toaster position="top-right" richColors closeButton />
+        <ThemeProvider>
+          {children}
+          <Analytics />
+          <Toaster position="top-right" richColors closeButton />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -17,7 +17,7 @@ export function StatCard({ label, value, caption, href, icon: Icon }: StatCardPr
       className="group rounded-xl border border-[var(--admin-border)] bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--admin-gold)] hover:shadow-md"
     >
       <div className="flex items-start justify-between gap-3">
-        <span className="grid size-10 place-items-center rounded-lg bg-amber-50 text-[var(--admin-gold)]">
+        <span className="grid size-10 place-items-center rounded-lg bg-soft-gold text-gold-dark">
           <Icon className="size-5" aria-hidden />
         </span>
         <ArrowRight className="size-4 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[var(--admin-gold)]" aria-hidden />

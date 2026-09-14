@@ -23,7 +23,7 @@ export const metadata = { title: "จัดการบริการ" };
 
 const STATUS_STYLE: Record<ServiceStatus, string> = {
   active: "bg-emerald-100 text-emerald-700",
-  maintenance: "bg-amber-100 text-amber-700",
+  maintenance: "bg-soft-gold text-gold-dark",
   inactive: "bg-slate-100 text-slate-600",
 };
 

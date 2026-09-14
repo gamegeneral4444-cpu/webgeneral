@@ -17,7 +17,7 @@ export function ServiceCard({ service }: { service: Service }) {
           <LucideIcon name={service.icon} className="size-6" aria-hidden />
         </span>
         {service.status !== "active" ? (
-          <Badge variant="secondary" className="text-amber-700">
+          <Badge variant="secondary" className="text-gold-dark">
             {SERVICE_STATUS[service.status]}
           </Badge>
         ) : (

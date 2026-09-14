@@ -44,7 +44,7 @@ export function NewsCard({ news }: { news: News }) {
           </div>
         )}
         {news.is_featured && (
-          <Badge className="absolute right-3 top-3 bg-[#0f172a] text-white">ข่าวเด่น</Badge>
+          <Badge className="absolute right-3 top-3 bg-navy-deep text-white">ข่าวเด่น</Badge>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">

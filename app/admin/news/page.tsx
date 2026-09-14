@@ -25,7 +25,7 @@ export const metadata = { title: "จัดการข่าว" };
 
 const STATUS_STYLE: Record<NewsStatus, string> = {
   published: "bg-emerald-100 text-emerald-700",
-  draft: "bg-amber-100 text-amber-700",
+  draft: "bg-soft-gold text-gold-dark",
   archived: "bg-slate-100 text-slate-600",
 };
 

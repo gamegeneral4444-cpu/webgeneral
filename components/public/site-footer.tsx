@@ -13,7 +13,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
   const youtubeHref = safeHttpUrl(settings?.youtube_url);
 
   return (
-    <footer className="mt-auto bg-[#0f172a] text-slate-300">
+    <footer className="mt-auto bg-navy-deep text-slate-300">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 md:grid-cols-3">
         {/* ติดต่อเรา */}
         <div>
@@ -135,9 +135,9 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
         </div>
       </div>
 
-      {/* แถบลิขสิทธิ์ทอง */}
-      <div className="bg-gradient-to-r from-primary to-[#d97706]">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-3 text-center text-xs text-white sm:flex-row sm:text-left">
+      {/* แถบลิขสิทธิ์ทอง — ล้อริบบิ้นทองบนตราสัญลักษณ์ */}
+      <div className="bg-gradient-to-r from-gold-dark via-gold to-gold-light">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-3 text-center text-xs text-navy-deep sm:flex-row sm:text-left">
           <p>
             © {new Date().getFullYear()} {schoolName} · {siteName} สงวนลิขสิทธิ์
           </p>

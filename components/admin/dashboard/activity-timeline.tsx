@@ -13,10 +13,10 @@ export function ActivityTimeline({ rows }: { rows: AuditSummary[] }) {
         <Link href="/admin/activity" className="inline-flex items-center gap-1 text-xs text-[var(--admin-gold)] hover:underline">ดูทั้งหมด <ArrowRight className="size-3" aria-hidden /></Link>
       </div>
       {rows.length === 0 ? <p className="py-8 text-center text-sm text-muted-foreground">ยังไม่มีกิจกรรมล่าสุด</p> : (
-        <ol className="relative ml-2 border-l border-amber-200 pl-5">
+        <ol className="relative ml-2 border-l border-gold/30 pl-5">
           {rows.slice(0, 6).map((activity) => (
             <li key={activity.id} className="relative pb-5 last:pb-0">
-              <span className="absolute -left-[1.55rem] top-1.5 size-2.5 rounded-full border-2 border-white bg-[var(--admin-gold)] ring-1 ring-amber-300" />
+              <span className="absolute -left-[1.55rem] top-1.5 size-2.5 rounded-full border-2 border-white bg-[var(--admin-gold)] ring-1 ring-gold/40" />
               <p className="text-sm font-semibold text-[var(--admin-ink)]">{activity.actor_full_name || activity.actor_email || "ระบบ"}</p>
               <p className="mt-0.5 text-xs text-slate-600">{ACTION_LABEL[activity.action] ?? activity.action}ข้อมูลใน {activity.table_name || "ระบบ"}</p>
               <time className="mt-1 block text-xs text-muted-foreground">{formatThaiDate(activity.created_at, { withTime: true })}</time>

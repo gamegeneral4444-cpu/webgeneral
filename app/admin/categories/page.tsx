@@ -36,7 +36,7 @@ async function CategoryGroup({ table }: { table: CategoryTable }) {
   const rows = await adminListCategoriesWithCount(table);
   return (
     <div className="space-y-4">
-      <form action={createCategoryForm.bind(null, table)} className="grid gap-3 rounded-xl border border-[var(--admin-border)] bg-amber-50/40 p-4 md:grid-cols-[1fr_1fr_1.5fr_7rem_auto_auto] md:items-end">
+      <form action={createCategoryForm.bind(null, table)} className="grid gap-3 rounded-xl border border-[var(--admin-border)] bg-soft-gold/50 p-4 md:grid-cols-[1fr_1fr_1.5fr_7rem_auto_auto] md:items-end">
         <CategoryFields />
         <Button type="submit" className="bg-[var(--admin-gold)] text-[var(--admin-navy-strong)] hover:bg-[var(--admin-gold-bright)]">เพิ่มหมวดหมู่</Button>
       </form>

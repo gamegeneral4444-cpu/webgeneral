@@ -54,43 +54,52 @@ export default async function HomePage() {
   return (
     <>
       {/* ===== Hero ===== */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-br from-soft-gold via-amber-50/40 to-background">
-        {/* ลายจุด */}
+      <section className="relative overflow-hidden border-b border-gold bg-gradient-to-br from-brand-navy via-brand-navy to-navy-deep">
+        {/* ลายจุดทอง */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.5]"
           style={{
             backgroundImage:
-              "radial-gradient(circle, rgba(180,83,9,0.12) 1px, transparent 1px)",
+              "radial-gradient(circle, rgba(230,201,128,0.18) 1px, transparent 1px)",
             backgroundSize: "22px 22px",
           }}
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute -right-20 -top-20 size-96 rounded-full bg-gold/20 blur-3xl"
+          className="pointer-events-none absolute -right-20 -top-20 size-96 rounded-full bg-gold/25 blur-3xl"
           aria-hidden
         />
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 lg:grid-cols-2 lg:py-20">
           {/* ซ้าย: ข้อความ */}
           <div>
-            <h1 className="text-4xl font-bold leading-tight text-[#0f172a] sm:text-5xl">
+            <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl">
               ยินดีต้อนรับสู่
               {/* pt/pb + leading เผื่อพื้นที่ให้วรรณยุกต์ที่ซ้อนบนสระ (เช่น "ทั่ว") ไม่ถูก bg-clip-text ตัดทิ้ง */}
-              <span className="mt-1 block bg-gradient-to-r from-primary to-[#d97706] bg-clip-text pb-1 pt-2 text-5xl leading-[1.3] text-transparent sm:text-6xl">
+              <span className="mt-1 block bg-gradient-to-r from-gold-light to-gold bg-clip-text pb-1 pt-2 text-5xl leading-[1.3] text-transparent sm:text-6xl">
                 {settings?.site_name ?? "กลุ่มบริหารงานทั่วไป"}
               </span>
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-slate-600">
+            <p className="mt-5 max-w-xl text-lg text-white/85">
               มุ่งมั่นให้บริการอย่างเป็นระบบ รวดเร็ว โปร่งใส และเป็นเลิศ
               เพื่อสนับสนุนการบริหารจัดการภายในโรงเรียนอย่างมีประสิทธิภาพ
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="shadow-md shadow-primary/20">
+              <Button
+                asChild
+                size="lg"
+                className="bg-gradient-to-b from-gold-light to-gold text-navy-deep shadow-lg shadow-black/25 hover:from-gold hover:to-gold"
+              >
                 <Link href="/services">
                   <Users className="size-4" aria-hidden /> เข้าสู่ระบบบริการ
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="bg-background">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="glass-mirror-soft border-white/30 text-white hover:bg-white/15 hover:text-gold-light"
+              >
                 <Link href="/downloads">
                   <Download className="size-4" aria-hidden /> ดาวน์โหลดเอกสาร
                 </Link>
@@ -100,7 +109,7 @@ export default async function HomePage() {
 
           {/* ขวา: ภาพประกอบอาคาร (illustration panel) */}
           <div className="relative">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border bg-gradient-to-br from-sky-100 via-amber-50 to-emerald-50 shadow-xl">
+            <div className="glass-mirror glass-edge-gold relative aspect-[4/3] overflow-hidden rounded-2xl p-0 shadow-xl">
               {settings?.banner_image_url && (
                 <Image
                   src={stripBannerImageCrop(settings.banner_image_url)}
@@ -145,7 +154,7 @@ export default async function HomePage() {
                     <span className="grid size-14 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                       <LucideIcon name={service.icon} className="size-7" aria-hidden />
                     </span>
-                    <span className="text-sm font-medium text-[#0f172a] group-hover:text-primary">
+                    <span className="text-sm font-medium text-foreground group-hover:text-primary">
                       {service.name}
                     </span>
                     <span className="h-0.5 w-8 rounded-full bg-gold transition-all group-hover:w-12" aria-hidden />
@@ -178,7 +187,7 @@ export default async function HomePage() {
                   <span className="grid size-14 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                     <s.icon className="size-7" aria-hidden />
                   </span>
-                  <span className="text-sm font-medium text-[#0f172a] group-hover:text-primary">
+                  <span className="text-sm font-medium text-foreground group-hover:text-primary">
                     {s.label}
                   </span>
                   <span className="h-0.5 w-8 rounded-full bg-gold transition-all group-hover:w-12" aria-hidden />
@@ -264,13 +273,21 @@ export default async function HomePage() {
       </section>
 
       {/* ===== Contact CTA ===== */}
-      <section className="border-t bg-primary/5">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-12 text-center">
-          <h2 className="text-2xl font-bold text-[#0f172a]">ต้องการติดต่อกลุ่มบริหารงานทั่วไป?</h2>
-          <p className="max-w-xl text-muted-foreground">
+      <section className="relative overflow-hidden border-t border-gold bg-gradient-to-br from-brand-navy to-navy-deep">
+        <div
+          className="pointer-events-none absolute -left-24 -top-24 size-80 rounded-full bg-gold/20 blur-3xl"
+          aria-hidden
+        />
+        <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-12 text-center">
+          <h2 className="text-2xl font-bold text-white">ต้องการติดต่อกลุ่มบริหารงานทั่วไป?</h2>
+          <p className="max-w-xl text-white/80">
             สอบถามข้อมูล แจ้งเรื่อง หรือขอรับบริการต่าง ๆ ได้ตามช่องทางด้านล่าง
           </p>
-          <Button asChild size="lg">
+          <Button
+            asChild
+            size="lg"
+            className="bg-gradient-to-b from-gold-light to-gold text-navy-deep shadow-lg shadow-black/25 hover:from-gold hover:to-gold"
+          >
             <Link href="/contact">
               ช่องทางติดต่อ <ArrowRight className="size-4" aria-hidden />
             </Link>
