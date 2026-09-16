@@ -100,11 +100,23 @@ export const categorySchema = z.object({
 });
 export type CategoryInput = z.infer<typeof categorySchema>;
 
+/** ลิงก์รูป: URL เต็ม หรือ path ภายในเว็บที่ขึ้นต้นด้วย / */
+const siteImageRef = z
+  .string()
+  .trim()
+  .refine(
+    (v) => v === "" || v.startsWith("/") || /^https?:\/\//.test(v),
+    "ต้องเป็นลิงก์เต็ม (https://…) หรือ path ภายในเว็บที่ขึ้นต้นด้วย /",
+  )
+  .optional()
+  .or(z.literal(""));
+
 export const settingsSchema = z.object({
   site_name: z.string().min(1, "กรุณากรอกชื่อเว็บไซต์"),
   school_name: z.string().optional().or(z.literal("")),
-  logo_url: z.string().url().optional().or(z.literal("")),
-  banner_image_url: z.string().url().optional().or(z.literal("")),
+  // รับได้ทั้ง URL เต็ม และ path ภายในเว็บอย่าง /logo.png (ไฟล์ใน public/)
+  logo_url: siteImageRef,
+  banner_image_url: siteImageRef,
   primary_color: z.string().optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
