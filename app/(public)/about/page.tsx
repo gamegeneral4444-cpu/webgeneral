@@ -26,7 +26,7 @@ export default function AboutPage() {
               <h2 className="text-xl font-bold text-foreground">วิสัยทัศน์</h2>
             </div>
             <p className="mt-4 text-muted-foreground">
-              มุ่งพัฒนาศักยภาพเด็กพิเศษให้มีคุณภาพเต็มตาศักยภาพ
+              มุ่งพัฒนาศักยภาพเด็กพิเศษให้มีคุณภาพเต็มตามศักยภาพ
               สามารถดำเนินชีวิตในสังคมได้อย่างปกติสุข
               โดยการมีส่วนร่วมของภาคีเครือข่ายที่หลากหลาย
             </p>
