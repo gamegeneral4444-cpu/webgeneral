@@ -5,10 +5,11 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, Phone, Mail, MapPin, Search } from "lucide-react";
-import { FacebookIcon, LineIcon, YoutubeIcon } from "@/components/brand-icons";
+import { FacebookIcon, YoutubeIcon } from "@/components/brand-icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UnitsNav, UnitsNavMobile } from "@/components/public/units-nav";
 import { cn } from "@/lib/utils";
+import { safeHttpUrl } from "@/lib/social";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { PUBLIC_NAV } from "@/lib/constants";
@@ -19,6 +20,8 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
   const [open, setOpen] = useState(false);
   const siteName = settings?.site_name ?? "ฝ่ายบริหารทั่วไป";
   const schoolName = settings?.school_name ?? "โรงเรียนตัวอย่างวิทยา";
+  const facebookHref = safeHttpUrl(settings?.facebook_url);
+  const youtubeHref = safeHttpUrl(settings?.youtube_url);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -46,18 +49,31 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
             )}
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden sm:inline">ติดตามเรา :</span>
-            {settings?.facebook_url && (
-              <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="grid size-6 place-items-center rounded-full bg-white text-[#1877F2] transition-transform hover:scale-110">
+            {(facebookHref || youtubeHref) && (
+              <span className="hidden sm:inline">ติดตามเรา :</span>
+            )}
+            {facebookHref && (
+              <a
+                href={facebookHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="grid size-6 place-items-center rounded-full bg-white text-[#1877F2] transition-transform hover:scale-110"
+              >
                 <FacebookIcon className="size-3.5" />
               </a>
             )}
-            <span aria-label="LINE" className="grid size-6 place-items-center rounded-full bg-white text-[#06C755]">
-              <LineIcon className="size-3.5" />
-            </span>
-            <span aria-label="YouTube" className="grid size-6 place-items-center rounded-full bg-white text-[#FF0000]">
-              <YoutubeIcon className="size-3.5" />
-            </span>
+            {youtubeHref && (
+              <a
+                href={youtubeHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="grid size-6 place-items-center rounded-full bg-white text-[#FF0000] transition-transform hover:scale-110"
+              >
+                <YoutubeIcon className="size-3.5" />
+              </a>
+            )}
           </div>
         </div>
       </div>
