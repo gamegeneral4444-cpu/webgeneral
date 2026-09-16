@@ -26,8 +26,9 @@ export default function AboutPage() {
               <h2 className="text-xl font-bold text-foreground">วิสัยทัศน์</h2>
             </div>
             <p className="mt-4 text-muted-foreground">
-              เป็นหน่วยงานสนับสนุนการบริหารจัดการของโรงเรียนที่มีประสิทธิภาพ
-              ให้บริการด้วยความรวดเร็ว โปร่งใส และมุ่งสู่ความเป็นเลิศ
+              มุ่งพัฒนาศักยภาพเด็กพิเศษให้มีคุณภาพเต็มตาศักยภาพ
+              สามารถดำเนินชีวิตในสังคมได้อย่างปกติสุข
+              โดยการมีส่วนร่วมของภาคีเครือข่ายที่หลากหลาย
             </p>
           </div>
           <div className="rounded-2xl border bg-card p-7 shadow-sm">
