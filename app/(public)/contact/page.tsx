@@ -25,7 +25,7 @@ export default async function ContactPage() {
     <>
       <PageHero
         title="ติดต่อเรา"
-        subtitle="ช่องทางการติดต่อกลุ่มบริหารงานทั่วไป"
+        subtitle="ช่องทางการติดต่อฝ่ายบริหารทั่วไป"
         crumbs={[{ label: "ติดต่อเรา" }]}
       />
       <div className="mx-auto max-w-7xl px-4 py-10">

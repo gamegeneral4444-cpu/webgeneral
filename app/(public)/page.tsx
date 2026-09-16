@@ -77,7 +77,7 @@ export default async function HomePage() {
               ยินดีต้อนรับสู่
               {/* pt/pb + leading เผื่อพื้นที่ให้วรรณยุกต์ที่ซ้อนบนสระ (เช่น "ทั่ว") ไม่ถูก bg-clip-text ตัดทิ้ง */}
               <span className="mt-1 block bg-gradient-to-r from-gold-light to-gold bg-clip-text pb-1 pt-2 text-5xl leading-[1.3] text-transparent sm:text-6xl">
-                {settings?.site_name ?? "กลุ่มบริหารงานทั่วไป"}
+                {settings?.site_name ?? "ฝ่ายบริหารทั่วไป"}
               </span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/85">
@@ -201,7 +201,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-4">
           <SectionHeading
             title="ข่าวประชาสัมพันธ์"
-            subtitle="ติดตามข่าวสารและประกาศจากกลุ่มบริหารงานทั่วไป"
+            subtitle="ติดตามข่าวสารและประกาศจากฝ่ายบริหารทั่วไป"
             moreHref="/news"
             moreLabel="ดูข่าวทั้งหมด"
           />
@@ -256,7 +256,7 @@ export default async function HomePage() {
       {/* ===== บุคลากร ===== */}
       <section className="mx-auto max-w-7xl px-4 py-14">
         <SectionHeading
-          title="บุคลากรกลุ่มบริหารงานทั่วไป"
+          title="บุคลากรฝ่ายบริหารทั่วไป"
           subtitle="ทีมงานผู้พร้อมให้บริการ"
           moreHref="/staff"
           moreLabel="ดูบุคลากรทั้งหมด"
@@ -279,7 +279,7 @@ export default async function HomePage() {
           aria-hidden
         />
         <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-12 text-center">
-          <h2 className="text-2xl font-bold text-white">ต้องการติดต่อกลุ่มบริหารงานทั่วไป?</h2>
+          <h2 className="text-2xl font-bold text-white">ต้องการติดต่อฝ่ายบริหารทั่วไป?</h2>
           <p className="max-w-xl text-white/80">
             สอบถามข้อมูล แจ้งเรื่อง หรือขอรับบริการต่าง ๆ ได้ตามช่องทางด้านล่าง
           </p>

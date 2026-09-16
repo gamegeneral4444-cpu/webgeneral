@@ -46,7 +46,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
   } = useForm<SettingsInput>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
-      site_name: initial?.site_name ?? "กลุ่มบริหารงานทั่วไป",
+      site_name: initial?.site_name ?? "ฝ่ายบริหารทั่วไป",
       school_name: initial?.school_name ?? "",
       logo_url: initial?.logo_url ?? "",
       banner_image_url: initial?.banner_image_url ?? "",

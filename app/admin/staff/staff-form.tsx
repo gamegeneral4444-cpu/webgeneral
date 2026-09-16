@@ -45,7 +45,7 @@ export function StaffForm({ initial }: { initial?: Staff }) {
     defaultValues: {
       full_name: initial?.full_name ?? "",
       position: initial?.position ?? "",
-      department: initial?.department ?? "กลุ่มบริหารงานทั่วไป",
+      department: initial?.department ?? "ฝ่ายบริหารทั่วไป",
       responsibility: initial?.responsibility ?? "",
       phone: initial?.phone ?? "",
       email: initial?.email ?? "",

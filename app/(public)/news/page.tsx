@@ -27,7 +27,7 @@ export default async function NewsPage({
     <>
       <PageHero
         title="ข่าวประชาสัมพันธ์"
-        subtitle="ข่าวสารและประกาศจากกลุ่มบริหารงานทั่วไป"
+        subtitle="ข่าวสารและประกาศจากฝ่ายบริหารทั่วไป"
         crumbs={[{ label: "ข่าวประชาสัมพันธ์" }]}
       />
 

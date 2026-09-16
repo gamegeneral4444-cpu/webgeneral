@@ -58,7 +58,7 @@ function SidebarBrand() {
       </span>
       <span className="leading-tight">
         <span className="block text-base font-bold text-white">Admin Dashboard</span>
-        <span className="mt-1 block text-xs text-white/65">กลุ่มบริหารงานทั่วไป</span>
+        <span className="mt-1 block text-xs text-white/65">ฝ่ายบริหารทั่วไป</span>
       </span>
     </Link>
   );

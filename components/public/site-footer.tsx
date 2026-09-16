@@ -5,7 +5,7 @@ import { safeHttpUrl } from "@/lib/social";
 import type { SiteSettings } from "@/types/database";
 
 export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
-  const siteName = settings?.site_name ?? "กลุ่มบริหารงานทั่วไป";
+  const siteName = settings?.site_name ?? "ฝ่ายบริหารทั่วไป";
   const schoolName = settings?.school_name ?? "โรงเรียนตัวอย่างวิทยา";
   const facebookHref = safeHttpUrl(settings?.facebook_url);
   const lineValue = settings?.line_url?.trim() || "";

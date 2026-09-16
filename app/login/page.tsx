@@ -19,7 +19,7 @@ export default function LoginPage() {
             <span className="glass-mirror-soft glass-edge-gold grid size-16 place-items-center rounded-2xl">
               <Image src="/logo.png" alt="" width={52} height={52} className="object-contain" priority />
             </span>
-            <span className="text-xl font-bold text-white">กลุ่มบริหารงานทั่วไป</span>
+            <span className="text-xl font-bold text-white">ฝ่ายบริหารทั่วไป</span>
           </Link>
           <p className="mt-1 text-sm text-gold-light">ระบบจัดการหลังบ้าน (Admin)</p>
         </div>

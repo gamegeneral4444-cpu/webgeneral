@@ -31,8 +31,8 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
-        title="เกี่ยวกับกลุ่มบริหารงานทั่วไป"
-        subtitle="วิสัยทัศน์ พันธกิจ และขอบข่ายงานของกลุ่มบริหารงานทั่วไป"
+        title="เกี่ยวกับฝ่ายบริหารทั่วไป"
+        subtitle="วิสัยทัศน์ พันธกิจ และขอบข่ายงานของฝ่ายบริหารทั่วไป"
         crumbs={[{ label: "เกี่ยวกับเรา" }]}
       />
 
@@ -69,7 +69,7 @@ export default function AboutPage() {
         <div className="mt-10">
           <div className="mb-1 h-1 w-12 rounded-full bg-gold" aria-hidden />
           <h2 className="text-2xl font-bold text-foreground">ขอบข่ายงาน</h2>
-          <p className="mt-1 text-muted-foreground">งานในความรับผิดชอบของกลุ่มบริหารงานทั่วไป</p>
+          <p className="mt-1 text-muted-foreground">งานในความรับผิดชอบของฝ่ายบริหารทั่วไป</p>
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {SCOPE.map((s) => (
               <div

@@ -16,7 +16,7 @@ import type { SiteSettings } from "@/types/database";
 export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const siteName = settings?.site_name ?? "กลุ่มบริหารงานทั่วไป";
+  const siteName = settings?.site_name ?? "ฝ่ายบริหารทั่วไป";
   const schoolName = settings?.school_name ?? "โรงเรียนตัวอย่างวิทยา";
 
   const isActive = (href: string) =>

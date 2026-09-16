@@ -2,7 +2,7 @@
  * ค่าคงที่ส่วนกลางของเว็บไซต์
  * ใช้เป็น fallback เมื่อยังไม่ได้ตั้งค่า site_settings ในฐานข้อมูล
  */
-const DEFAULT_SITE_NAME = "กลุ่มบริหารงานทั่วไป";
+const DEFAULT_SITE_NAME = "ฝ่ายบริหารทั่วไป";
 const envSiteName = process.env.NEXT_PUBLIC_SITE_NAME?.trim();
 
 export const SITE = {
@@ -11,7 +11,7 @@ export const SITE = {
   name: envSiteName && /\p{L}/u.test(envSiteName) ? envSiteName : DEFAULT_SITE_NAME,
   schoolName: "โรงเรียนตัวอย่างวิทยา",
   description:
-    "เว็บไซต์กลุ่มบริหารงานทั่วไป รวมข่าวประชาสัมพันธ์ ระบบบริการออนไลน์ ดาวน์โหลดเอกสาร และช่องทางติดต่อของโรงเรียน",
+    "เว็บไซต์ฝ่ายบริหารทั่วไป รวมข่าวประชาสัมพันธ์ ระบบบริการออนไลน์ ดาวน์โหลดเอกสาร และช่องทางติดต่อของโรงเรียน",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 } as const;
 

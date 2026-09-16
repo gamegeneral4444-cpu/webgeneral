@@ -13,7 +13,7 @@ export default async function GalleryPage() {
     <>
       <PageHero
         title="ภาพกิจกรรม"
-        subtitle="รวมภาพบรรยากาศกิจกรรมต่าง ๆ ของกลุ่มบริหารงานทั่วไป"
+        subtitle="รวมภาพบรรยากาศกิจกรรมต่าง ๆ ของฝ่ายบริหารทั่วไป"
         crumbs={[{ label: "ภาพกิจกรรม" }]}
       />
       <div className="mx-auto max-w-7xl px-4 py-10">

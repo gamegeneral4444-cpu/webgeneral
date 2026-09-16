@@ -13,7 +13,7 @@ export default async function ServicesPage() {
     <>
       <PageHero
         title="ระบบบริการออนไลน์"
-        subtitle="บริการของกลุ่มบริหารงานทั่วไปที่เข้าถึงได้ทุกที่ ทุกเวลา"
+        subtitle="บริการของฝ่ายบริหารทั่วไปที่เข้าถึงได้ทุกที่ ทุกเวลา"
         crumbs={[{ label: "ระบบบริการ" }]}
       />
       <div className="mx-auto max-w-7xl px-4 py-10">

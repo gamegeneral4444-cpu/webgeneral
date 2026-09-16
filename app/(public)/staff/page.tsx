@@ -12,7 +12,7 @@ export default async function StaffPage() {
   return (
     <>
       <PageHero
-        title="บุคลากรกลุ่มบริหารงานทั่วไป"
+        title="บุคลากรฝ่ายบริหารทั่วไป"
         subtitle="ทีมงานผู้พร้อมให้บริการและดูแลงานบริหารทั่วไป"
         crumbs={[{ label: "บุคลากร" }]}
       />
