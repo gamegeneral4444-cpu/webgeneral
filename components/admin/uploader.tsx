@@ -26,6 +26,7 @@ export function Uploader({
 }) {
   const rules = UPLOAD_RULES[kind];
   const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   async function handleFile(file: File) {
     if (!(rules.accept as readonly string[]).includes(file.type)) {
@@ -65,6 +66,14 @@ export function Uploader({
     e.target.value = "";
   }
 
+  function onDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setDragOver(false);
+    if (uploading) return;
+    const file = e.dataTransfer.files?.[0];
+    if (file) void handleFile(file);
+  }
+
   const fileInput = (
     <input
       type="file"
@@ -100,10 +109,17 @@ export function Uploader({
           <div className="basis-full">{fileInput}</div>
         </div>
       ) : (
-        <div
+        <label
+          onDragOver={(e) => {
+            e.preventDefault();
+            if (!uploading) setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={onDrop}
           className={cn(
-            "flex w-full flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-muted/20 px-4 py-8 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-accent/40",
-            uploading && "opacity-70",
+            "flex w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-muted/20 px-4 py-8 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-accent/40",
+            dragOver && "border-primary bg-accent/60",
+            uploading && "cursor-not-allowed opacity-70",
           )}
         >
           {uploading ? (
@@ -114,12 +130,21 @@ export function Uploader({
           ) : (
             <>
               <UploadCloud className="size-7 text-primary" aria-hidden />
-              <span className="font-medium text-foreground">เลือกไฟล์เพื่ออัปโหลด</span>
+              <span className="font-medium text-foreground">
+                คลิกที่กล่องนี้เพื่อเลือกไฟล์ หรือลากไฟล์มาวาง
+              </span>
               <span className="text-xs">{rules.label}</span>
-              {fileInput}
             </>
           )}
-        </div>
+          {/* ซ่อน input ไว้ใต้ label — คลิกที่ไหนในกล่องก็เปิดหน้าต่างเลือกไฟล์ได้ */}
+          <input
+            type="file"
+            accept={rules.accept.join(",")}
+            disabled={uploading}
+            onChange={onFileChange}
+            className="sr-only"
+          />
+        </label>
       )}
     </div>
   );
