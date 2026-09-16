@@ -124,7 +124,17 @@ export const unitPostSchema = z.object({
   unit_slug: z.string().refine((s) => UNITS.some((u) => u.slug === s), "ไม่พบงานที่เลือก"),
   title: z.string().min(1, "กรุณากรอกหัวข้อ").max(255),
   body: z.string().max(20000).optional().or(z.literal("")),
-  attachment_url: z.string().url("ลิงก์ไฟล์แนบไม่ถูกต้อง").optional().or(z.literal("")),
+  attachments: z
+    .array(
+      z.object({
+        url: z.string().url("ลิงก์ไฟล์แนบไม่ถูกต้อง"),
+        name: z.string().max(255).default(""),
+        type: z.string().max(100).default(""),
+        size: z.coerce.number().int().nonnegative().default(0),
+      }),
+    )
+    .max(20, "แนบได้สูงสุด 20 ไฟล์ต่อหนึ่งรายการ")
+    .default([]),
   status: z.enum(["draft", "published"]),
   posted_at: z.string().optional().or(z.literal("")),
 });

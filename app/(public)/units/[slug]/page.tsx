@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { CalendarDays, Paperclip, UserRound } from "lucide-react";
+import { CalendarDays, UserRound } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
 import { EmptyState } from "@/components/public/section";
+import { PostAttachments } from "@/components/public/post-attachments";
 import { UNITS, findUnit } from "@/lib/units";
 import { getUnitPosts, getUnitStaffMap } from "@/lib/data";
 import { formatThaiDate } from "@/lib/format";
@@ -124,16 +125,7 @@ export default async function UnitDetailPage({
                     {p.body}
                   </p>
                 )}
-                {p.attachment_url && (
-                  <a
-                    href={p.attachment_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-                  >
-                    <Paperclip className="size-4" aria-hidden /> ไฟล์แนบ
-                  </a>
-                )}
+                <PostAttachments files={p.attachments ?? []} />
               </li>
             ))}
           </ol>

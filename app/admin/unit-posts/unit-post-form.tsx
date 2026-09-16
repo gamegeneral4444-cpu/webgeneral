@@ -21,7 +21,10 @@ import {
 import { unitPostSchema } from "@/lib/validations";
 import { UNITS } from "@/lib/units";
 import { createUnitPost, updateUnitPost } from "@/lib/actions/unit-posts";
-import type { UnitPost } from "@/types/database";
+import { MultiUploader } from "@/components/admin/multi-uploader";
+import { BUCKETS } from "@/lib/constants";
+import { useState } from "react";
+import type { UnitPost, UnitPostFile } from "@/types/database";
 
 type FormValues = z.input<typeof unitPostSchema>;
 
@@ -34,6 +37,7 @@ function toFormData(v: FormValues): FormData {
 export function UnitPostForm({ initial }: { initial?: UnitPost }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [files, setFiles] = useState<UnitPostFile[]>(initial?.attachments ?? []);
 
   const {
     register,
@@ -47,7 +51,6 @@ export function UnitPostForm({ initial }: { initial?: UnitPost }) {
       unit_slug: initial?.unit_slug ?? UNITS[0].slug,
       title: initial?.title ?? "",
       body: initial?.body ?? "",
-      attachment_url: initial?.attachment_url ?? "",
       status: initial?.status ?? "draft",
       posted_at: initial?.posted_at ? initial.posted_at.slice(0, 10) : "",
     },
@@ -56,6 +59,7 @@ export function UnitPostForm({ initial }: { initial?: UnitPost }) {
   function onSubmit(values: FormValues) {
     startTransition(async () => {
       const fd = toFormData(values);
+      fd.set("attachments", JSON.stringify(files));
       const res = initial ? await updateUnitPost(initial.id, fd) : await createUnitPost(fd);
       if (!res.ok) {
         toast.error(res.error ?? "บันทึกไม่สำเร็จ");
@@ -104,14 +108,11 @@ export function UnitPostForm({ initial }: { initial?: UnitPost }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="attachment_url">ลิงก์ไฟล์แนบ (ไม่บังคับ)</Label>
-        <Input id="attachment_url" type="url" placeholder="https://…" {...register("attachment_url")} />
+        <Label>ไฟล์แนบ (ไม่บังคับ)</Label>
+        <MultiUploader bucket={BUCKETS.siteAssets} value={files} onChange={setFiles} />
         <p className="text-xs text-muted-foreground">
-          อัปไฟล์ผ่านเมนู &quot;เอกสารดาวน์โหลด&quot; แล้วคัดลอกลิงก์มาวางที่นี่
+          รูปภาพจะขึ้นเป็นแกลเลอรีกดขยายได้ ส่วนเอกสารจะขึ้นเป็นรายการให้กดดาวน์โหลด
         </p>
-        {errors.attachment_url && (
-          <p className="text-sm text-destructive">{errors.attachment_url.message}</p>
-        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

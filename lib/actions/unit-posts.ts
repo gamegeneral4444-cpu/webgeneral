@@ -4,12 +4,24 @@ import { revalidatePath } from "next/cache";
 import { unitPostSchema } from "@/lib/validations";
 import { authorize, nullifyEmpty, type ActionResult } from "@/lib/actions/helpers";
 
+/** ฟอร์มส่ง attachments มาเป็น JSON string เพราะ FormData เก็บ array ซ้อนไม่ได้ */
+function readAttachments(formData: FormData): unknown {
+  const raw = formData.get("attachments");
+  if (typeof raw !== "string" || !raw.trim()) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 function parse(formData: FormData) {
   return unitPostSchema.safeParse({
     unit_slug: formData.get("unit_slug"),
     title: formData.get("title"),
     body: formData.get("body") ?? "",
-    attachment_url: formData.get("attachment_url") ?? "",
+    attachments: readAttachments(formData),
     status: formData.get("status"),
     posted_at: formData.get("posted_at") ?? "",
   });

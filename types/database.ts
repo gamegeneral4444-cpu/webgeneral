@@ -167,13 +167,24 @@ export interface AnalyticsDaily {
 export type UnitPostStatus = "draft" | "published";
 
 /** โพสต์งานของแต่ละงานในฝ่าย — แยกจากข่าวประชาสัมพันธ์ */
+/** ไฟล์แนบหนึ่งชิ้นในโพสต์งาน */
+export interface UnitPostFile {
+  url: string;
+  name: string;
+  /** MIME type เช่น image/png — ใช้ตัดสินว่าจะโชว์เป็นรูปหรือเป็นลิงก์ดาวน์โหลด */
+  type: string;
+  size: number;
+}
+
 export interface UnitPost {
   id: string;
   /** ตรงกับ slug ใน lib/units.ts */
   unit_slug: string;
   title: string;
   body: string;
+  /** เลิกใช้แล้ว เก็บไว้เพื่อความเข้ากันได้ย้อนหลัง ใช้ attachments แทน */
   attachment_url: string | null;
+  attachments: UnitPostFile[];
   status: UnitPostStatus;
   posted_at: string | null;
   created_by: string | null;
