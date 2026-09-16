@@ -49,3 +49,25 @@ export async function toggleUserActive(id: string, isActive: boolean): Promise<A
     return { ok: false, error: (e as Error).message };
   }
 }
+
+/**
+ * แก้ชื่อที่แสดงของผู้ใช้
+ * แก้ชื่อตัวเองได้ ต่างจากบทบาท/สถานะที่ห้ามแก้ของตัวเอง เพราะไม่มีผลเรื่องสิทธิ์
+ */
+export async function updateUserName(id: string, fullName: string): Promise<ActionResult> {
+  try {
+    const { supabase } = await authorize("manageUsers");
+    const name = fullName.trim();
+    if (!name) return { ok: false, error: "กรุณากรอกชื่อ" };
+    if (name.length > 255) return { ok: false, error: "ชื่อยาวเกิน 255 ตัวอักษร" };
+
+    const { error } = await supabase.from("profiles").update({ full_name: name }).eq("id", id);
+    if (error) return { ok: false, error: error.message };
+
+    revalidatePath("/admin/users");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
+}
