@@ -1,31 +1,11 @@
 import type { Metadata } from "next";
-import {
-  Building2,
-  Car,
-  Megaphone,
-  FileStack,
-  HeartPulse,
-  UtensilsCrossed,
-  ShieldCheck,
-  Sparkles,
-  Target,
-  Eye,
-} from "lucide-react";
+import Link from "next/link";
+import { Target, Eye } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
+import { UNITS } from "@/lib/units";
 
 export const metadata: Metadata = { title: "เกี่ยวกับเรา" };
 export const revalidate = 3600;
-
-const SCOPE = [
-  { icon: Building2, label: "งานอาคารสถานที่" },
-  { icon: Car, label: "งานยานพาหนะ" },
-  { icon: Megaphone, label: "งานประชาสัมพันธ์" },
-  { icon: FileStack, label: "งานสารบรรณ" },
-  { icon: HeartPulse, label: "งานอนามัยโรงเรียน" },
-  { icon: UtensilsCrossed, label: "งานโภชนาการ" },
-  { icon: ShieldCheck, label: "งานรักษาความปลอดภัย" },
-  { icon: Sparkles, label: "งานบริการทั่วไป" },
-];
 
 export default function AboutPage() {
   return (
@@ -71,16 +51,17 @@ export default function AboutPage() {
           <h2 className="text-2xl font-bold text-foreground">ขอบข่ายงาน</h2>
           <p className="mt-1 text-muted-foreground">งานในความรับผิดชอบของฝ่ายบริหารทั่วไป</p>
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {SCOPE.map((s) => (
-              <div
-                key={s.label}
-                className="flex flex-col items-center gap-3 rounded-xl border bg-card p-5 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            {UNITS.map((u) => (
+              <Link
+                key={u.slug}
+                href={`/units/${u.slug}`}
+                className="flex flex-col items-center gap-3 rounded-xl border bg-card p-5 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
               >
                 <span className="grid size-12 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10">
-                  <s.icon className="size-6" aria-hidden />
+                  <u.icon className="size-6" aria-hidden />
                 </span>
-                <span className="text-sm font-medium text-foreground">{s.label}</span>
-              </div>
+                <span className="text-sm font-medium text-foreground">{u.label}</span>
+              </Link>
             ))}
           </div>
         </div>

@@ -19,6 +19,7 @@ export const SITE = {
 export const PUBLIC_NAV = [
   { href: "/", label: "หน้าแรก" },
   { href: "/about", label: "เกี่ยวกับเรา" },
+  { href: "/units", label: "งานในฝ่าย" },
   { href: "/news", label: "ข่าวประชาสัมพันธ์" },
   { href: "/services", label: "ระบบบริการ" },
   { href: "/downloads", label: "ดาวน์โหลด" },

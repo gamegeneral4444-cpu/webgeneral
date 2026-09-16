@@ -9,6 +9,7 @@ import type {
   Staff,
   SiteSettings,
   Category,
+  UnitPost,
 } from "@/types/database";
 
 /**
@@ -199,3 +200,46 @@ export async function getDashboardStats() {
 }
 
 export type { GalleryImage };
+
+/**
+ * โพสต์งานของงานในฝ่าย เรียงใหม่ก่อน
+ * ค่า posted_at ที่เป็น null จะถูกดันไปท้ายสุด แล้วเรียงต่อด้วย created_at
+ */
+export async function getUnitPosts(opts?: {
+  unitSlug?: string;
+  limit?: number;
+  includeDrafts?: boolean;
+}): Promise<UnitPost[]> {
+  return safe(async () => {
+    const supabase = await createClient();
+    let query = supabase.from("unit_posts").select("*");
+
+    if (opts?.unitSlug) query = query.eq("unit_slug", opts.unitSlug);
+    if (!opts?.includeDrafts) query = query.eq("status", "published");
+
+    query = query
+      .order("posted_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false });
+
+    if (opts?.limit) query = query.limit(opts.limit);
+
+    const { data } = await query;
+    return (data as UnitPost[]) ?? [];
+  }, []);
+}
+
+/** นับโพสต์ที่เผยแพร่แล้วของแต่ละงาน คืนเป็น map slug -> จำนวน */
+export async function getUnitPostCounts(): Promise<Record<string, number>> {
+  const posts = await getUnitPosts();
+  const out: Record<string, number> = {};
+  for (const p of posts) out[p.unit_slug] = (out[p.unit_slug] ?? 0) + 1;
+  return out;
+}
+
+export async function getUnitPost(id: string): Promise<UnitPost | null> {
+  return safe(async () => {
+    const supabase = await createClient();
+    const { data } = await supabase.from("unit_posts").select("*").eq("id", id).maybeSingle();
+    return (data as UnitPost) ?? null;
+  }, null);
+}

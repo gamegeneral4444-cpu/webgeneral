@@ -160,3 +160,20 @@ export interface AnalyticsDaily {
   path: string;
   page_views: number;
 }
+
+export type UnitPostStatus = "draft" | "published";
+
+/** โพสต์งานของแต่ละงานในฝ่าย — แยกจากข่าวประชาสัมพันธ์ */
+export interface UnitPost {
+  id: string;
+  /** ตรงกับ slug ใน lib/units.ts */
+  unit_slug: string;
+  title: string;
+  body: string;
+  attachment_url: string | null;
+  status: UnitPostStatus;
+  posted_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
