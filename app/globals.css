@@ -1,26 +1,320 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-sans);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-soft-gold: var(--soft-gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-navy-deep: var(--navy-deep);
+  --color-brand-navy: var(--brand-navy);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Brand: ฝ่ายบริหารงานทั่วไป — Navy / Gold, สีดูดจากตราสัญลักษณ์ GAD */
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #131a2b;
+  --card: #ffffff;
+  --card-foreground: #131a2b;
+  --popover: #ffffff;
+  --popover-foreground: #131a2b;
+
+  --primary: #00205e;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f5f7fc;
+  --secondary-foreground: #131a2b;
+
+  --muted: #eef1f8;
+  --muted-foreground: #5b6580;
+
+  --accent: #e7edf9;
+  --accent-foreground: #041233;
+
+  --gold: #c8952f;
+  --gold-foreground: #041233;
+  --soft-gold: #fbf6ea;
+  /* ทองเข้มพอสำหรับเป็นตัวหนังสือบนพื้นสว่าง (5.35:1) */
+  --gold-dark: #8a6420;
+  /* ทองอ่อนสำหรับตัวหนังสือบนพื้นกรมท่า (9.52:1) */
+  --gold-light: #e6c980;
+  --navy-deep: #041233;
+  /* กรมท่าของแบรนด์ ค่าเดียวกันทั้งสองธีม ใช้กับแถบฮีโร่/หัวเว็บ/CTA */
+  --brand-navy: #00205e;
+
+  --destructive: #dc2626;
+  --border: #e2e6f0;
+  --input: #e2e6f0;
+  --ring: #00205e;
+
+  --chart-1: #00205e;
+  --chart-2: #1c4fa3;
+  --chart-3: #c8952f;
+  --chart-4: #e6c980;
+  --chart-5: #64748b;
+
+  /* Admin sidebar: deep navy with gold accents */
+  --sidebar: #041233;
+  --sidebar-foreground: #dbe3f2;
+  --sidebar-primary: #e6c980;
+  --sidebar-primary-foreground: #041233;
+  --sidebar-accent: #0d2a5e;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #c8952f;
+
+  --admin-navy: #00205e;
+  --admin-navy-strong: #041233;
+  --admin-gold: #c8952f;
+  --admin-gold-bright: #e6c980;
+  --admin-ink: #102a4c;
+  --admin-surface: #f5f7fc;
+  --admin-border: #dde3ef;
+}
+
+.dark {
+  --background: #070d1c;
+  --foreground: #e4eaf7;
+  --card: #0e1730;
+  --card-foreground: #e4eaf7;
+  --popover: #0e1730;
+  --popover-foreground: #e4eaf7;
+
+  /* กรมท่าสว่างขึ้นให้อ่านออกบนพื้นเข้ม (6.13:1) */
+  --primary: #6f93d8;
+  --primary-foreground: #04112b;
+
+  --secondary: #16223f;
+  --secondary-foreground: #e4eaf7;
+
+  --muted: #16223f;
+  --muted-foreground: #96a3c0;
+
+  --accent: #10224a;
+  --accent-foreground: #cbd9f5;
+
+  --gold: #e0bb6a;
+  --gold-foreground: #04112b;
+  --soft-gold: #1a1508;
+  --gold-dark: #e0bb6a;
+  --gold-light: #f0d89b;
+  --navy-deep: #04112b;
+
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #6f93d8;
+
+  --chart-1: #6f93d8;
+  --chart-2: #4d74bd;
+  --chart-3: #e0bb6a;
+  --chart-4: #f0d89b;
+  --chart-5: #94a3b8;
+
+  --sidebar: #04112b;
+  --sidebar-foreground: #dbe3f2;
+  --sidebar-primary: #e0bb6a;
+  --sidebar-primary-foreground: #04112b;
+  --sidebar-accent: #0d2a5e;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #e0bb6a;
+
+  --admin-navy: #0d2a5e;
+  --admin-navy-strong: #04112b;
+  --admin-gold: #e0bb6a;
+  --admin-gold-bright: #f0d89b;
+  --admin-ink: #cbd9f5;
+  --admin-surface: #0e1730;
+  --admin-border: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   กระจกเงา (mirror glass)
+   ใช้ได้เฉพาะพื้นผิวที่มี "อะไรบางอย่าง" อยู่ข้างหลังให้เบลอ เช่น พื้นไล่เฉดกรมท่า
+   รูปภาพ หรือแถบที่ลอยทับเนื้อหาตอนเลื่อน — วางบนพื้นขาวทึบจะไม่เห็นผลใด ๆ
+   --------------------------------------------------------------------------- */
+.glass-mirror {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.34) 0%,
+    rgba(255, 255, 255, 0.07) 34%,
+    rgba(255, 255, 255, 0.02) 55%,
+    rgba(255, 255, 255, 0.16) 100%
+  );
+  backdrop-filter: blur(9px) saturate(150%);
+  -webkit-backdrop-filter: blur(9px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    0 14px 34px -18px rgba(0, 0, 0, 0.8);
+}
+
+/* แถบแสงพาดเฉียง — หัวใจของ "กระจกเงา" ที่ทำให้ต่างจากกระจกฝ้าธรรมดา */
+.glass-mirror::after {
+  content: "";
+  position: absolute;
+  inset: -60% -20% auto -20%;
+  height: 90%;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 62%
+  );
+  transform: rotate(-14deg);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* รุ่นพื้นกรมท่า สำหรับแถบใหญ่ที่ลอยทับเนื้อหา เช่น หัวเว็บแบบ sticky
+   ทึบพอให้ตัวหนังสือขาวอ่านออกเสมอ แต่ยังเห็นเนื้อหาเบลอ ๆ วิ่งผ่านข้างหลัง */
+.glass-navy {
+  position: relative;
+  background: color-mix(in srgb, var(--brand-navy) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.glass-navy::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.02) 42%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  pointer-events: none;
+}
+
+/* รุ่นอ่อน สำหรับแผ่นรองโลโก้และชิ้นเล็ก ๆ ที่ไม่ควรแย่งสายตา */
+.glass-mirror-soft {
+  position: relative;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.06) 60%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* สถานะ hover ของกระจก
+   ต้องเขียนไว้ตรงนี้ ไม่ใช่ใช้ utility อย่าง hover:bg-white/15 เพราะคลาสกระจก
+   อยู่นอก @layer จึงชนะ utility ของ Tailwind ที่อยู่ใน @layer utilities เสมอ
+   ใส่ hover:bg-* ไปก็ไม่มีผล */
+.glass-hover {
+  transition: background 150ms ease;
+}
+
+.glass-hover:hover {
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.34) 0%,
+    rgba(255, 255, 255, 0.16) 60%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+}
+
+/* ขอบทองบาง ๆ ใช้คู่กับกระจกเมื่ออยากให้ขอบเป็นทองแทนที่จะเป็นขาว */
+.glass-edge-gold {
+  border-color: rgba(230, 201, 128, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 0 22px -8px rgba(230, 201, 128, 0.5);
+}
+
+/* เบราว์เซอร์ที่ไม่รองรับ backdrop-filter ต้องไม่เห็นกล่องโปร่งจนอ่านไม่ออก */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-mirror,
+  .glass-mirror-soft {
+    background: rgba(4, 18, 51, 0.82);
+  }
+  .glass-navy {
+    background: var(--brand-navy);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-mirror::after {
+    display: none;
+  }
 }
