@@ -24,7 +24,7 @@ export type AdminNavItem = {
 export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin", label: "แดชบอร์ด", icon: LayoutDashboard },
   { href: "/admin/news", label: "ข่าวประชาสัมพันธ์", icon: Newspaper },
-  { href: "/admin/unit-posts", label: "งานในฝ่าย", icon: Briefcase },
+  { href: "/admin/unit-posts", label: "กลุ่มงาน", icon: Briefcase },
   { href: "/admin/documents", label: "เอกสารดาวน์โหลด", icon: FileText },
   { href: "/admin/gallery", label: "ภาพกิจกรรม", icon: Images },
   { href: "/admin/services", label: "ระบบบริการ", icon: Grid3x3, roles: ["super_admin", "admin"] },

@@ -5,7 +5,7 @@ import { PageHero } from "@/components/public/page-hero";
 import { UNITS } from "@/lib/units";
 import { getUnitPostCounts } from "@/lib/data";
 
-export const metadata: Metadata = { title: "งานในฝ่าย" };
+export const metadata: Metadata = { title: "กลุ่มงาน" };
 export const revalidate = 300;
 
 export default async function UnitsPage() {
@@ -14,9 +14,9 @@ export default async function UnitsPage() {
   return (
     <>
       <PageHero
-        title="งานในฝ่ายบริหารทั่วไป"
+        title="กลุ่มงานในฝ่ายบริหารทั่วไป"
         subtitle={`โครงสร้างงานย่อยทั้ง ${UNITS.length} งาน พร้อมความคืบหน้าล่าสุดของแต่ละงาน`}
-        crumbs={[{ label: "งานในฝ่าย" }]}
+        crumbs={[{ label: "กลุ่มงาน" }]}
       />
 
       <div className="mx-auto max-w-7xl px-4 py-12">

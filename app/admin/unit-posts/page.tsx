@@ -4,7 +4,7 @@ import { getUnitPosts } from "@/lib/data";
 import { UNITS } from "@/lib/units";
 import { formatThaiDate } from "@/lib/format";
 
-export const metadata = { title: "งานในฝ่าย" };
+export const metadata = { title: "กลุ่มงาน" };
 
 const UNIT_LABEL: Record<string, string> = Object.fromEntries(
   UNITS.map((u) => [u.slug, u.label]),
@@ -17,7 +17,7 @@ export default async function AdminUnitPostsPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-[var(--admin-ink)]">งานในฝ่าย</h1>
+          <h1 className="text-xl font-bold text-[var(--admin-ink)]">กลุ่มงาน</h1>
           <p className="text-sm text-muted-foreground">
             ลงงานและอัปเดตความคืบหน้าของแต่ละงาน แยกจากข่าวประชาสัมพันธ์
           </p>

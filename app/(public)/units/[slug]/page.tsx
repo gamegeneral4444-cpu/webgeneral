@@ -39,7 +39,7 @@ export default async function UnitDetailPage({
       <PageHero
         title={unit.label}
         subtitle={`ผู้รับผิดชอบ : ${unit.owner || "ยังไม่ได้ระบุ"}`}
-        crumbs={[{ label: "งานในฝ่าย", href: "/units" }, { label: unit.label }]}
+        crumbs={[{ label: "กลุ่มงาน", href: "/units" }, { label: unit.label }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 py-12">

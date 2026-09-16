@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { UNITS } from "@/lib/units";
 
 /**
- * เมนู "งานในฝ่าย" บนแถบหัวเว็บ (เฉพาะจอใหญ่)
+ * เมนู "กลุ่มงาน" บนแถบหัวเว็บ (เฉพาะจอใหญ่)
  *
  * แยกเป็นสองส่วนโดยตั้งใจ: กดที่ชื่อ = ไปหน้ารวม /units, กดลูกศร = กางรายการ 14 งาน
  * ทำให้หน้ารวมไม่ถูกปิดทางเข้า และไม่ใช้ hover เปิดเพราะใช้บนจอสัมผัสไม่ได้
@@ -28,12 +28,12 @@ export function UnitsNav({ active }: { active: boolean }) {
           active ? "text-gold-light" : "text-white/85",
         )}
       >
-        งานในฝ่าย
+        กลุ่มงาน
       </Link>
 
       <DropdownMenu>
         <DropdownMenuTrigger
-          aria-label="กางรายการงานในฝ่าย"
+          aria-label="กางรายการกลุ่มงาน"
           className="rounded-md py-2 pr-2 text-white/75 transition-colors hover:text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring data-open:text-gold-light"
         >
           <ChevronDown className="size-4 transition-transform data-open:rotate-180" aria-hidden />
@@ -90,7 +90,7 @@ export function UnitsNavMobile({
           active ? "bg-accent text-primary" : "text-foreground",
         )}
       >
-        งานในฝ่าย
+        กลุ่มงาน
         <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden />
       </summary>
 

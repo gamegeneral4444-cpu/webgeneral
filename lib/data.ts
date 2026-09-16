@@ -202,7 +202,7 @@ export async function getDashboardStats() {
 export type { GalleryImage };
 
 /**
- * โพสต์งานของงานในฝ่าย เรียงใหม่ก่อน
+ * โพสต์งานของกลุ่มงาน เรียงใหม่ก่อน
  * ค่า posted_at ที่เป็น null จะถูกดันไปท้ายสุด แล้วเรียงต่อด้วย created_at
  */
 export async function getUnitPosts(opts?: {
