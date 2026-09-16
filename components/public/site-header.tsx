@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Menu, Phone, Mail, MapPin, Search } from "lucide-react";
 import { FacebookIcon, LineIcon, YoutubeIcon } from "@/components/brand-icons";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { UnitsNav, UnitsNavMobile } from "@/components/public/units-nav";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -83,21 +84,25 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
           </Link>
 
           <nav className="hidden items-center gap-0.5 lg:flex" aria-label="เมนูหลัก">
-            {PUBLIC_NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "relative rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-gold-light",
-                  isActive(item.href) ? "text-gold-light" : "text-white/85",
-                )}
-              >
-                {item.label}
-                {isActive(item.href) && (
-                  <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-gold" aria-hidden />
-                )}
-              </Link>
-            ))}
+            {PUBLIC_NAV.map((item) =>
+              item.href === "/units" ? (
+                <UnitsNav key={item.href} active={isActive(item.href)} />
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "relative rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-gold-light",
+                    isActive(item.href) ? "text-gold-light" : "text-white/85",
+                  )}
+                >
+                  {item.label}
+                  {isActive(item.href) && (
+                    <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-gold" aria-hidden />
+                  )}
+                </Link>
+              ),
+            )}
             <Link
               href="/news"
               aria-label="ค้นหา"
@@ -124,19 +129,27 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
               <SheetContent side="right" className="w-72">
                 <SheetTitle className="px-4 pt-4 text-base">{siteName}</SheetTitle>
                 <nav className="mt-2 flex flex-col gap-1 p-2" aria-label="เมนูมือถือ">
-                  {PUBLIC_NAV.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className={cn(
-                        "rounded-md px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent",
-                        isActive(item.href) ? "bg-accent text-primary" : "text-foreground",
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                  {PUBLIC_NAV.map((item) =>
+                    item.href === "/units" ? (
+                      <UnitsNavMobile
+                        key={item.href}
+                        active={isActive(item.href)}
+                        onNavigate={() => setOpen(false)}
+                      />
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "rounded-md px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent",
+                          isActive(item.href) ? "bg-accent text-primary" : "text-foreground",
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    ),
+                  )}
                   <Button asChild className="mt-2">
                     <Link href="/login" onClick={() => setOpen(false)}>
                       เข้าสู่ระบบภายใน
