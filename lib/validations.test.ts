@@ -31,11 +31,30 @@ describe("unitPostSchema", () => {
     expect(unitPostSchema.safeParse({ ...ok, status: "archived" }).success).toBe(false);
   });
 
-  it("ยอมให้ลิงก์ไฟล์แนบเป็นค่าว่างได้", () => {
-    expect(unitPostSchema.safeParse({ ...ok, attachment_url: "" }).success).toBe(true);
+  it("ไม่มีไฟล์แนบก็ผ่าน", () => {
+    expect(unitPostSchema.safeParse({ ...ok, attachments: [] }).success).toBe(true);
   });
 
-  it("ไม่ผ่านเมื่อลิงก์ไฟล์แนบไม่ใช่ URL", () => {
-    expect(unitPostSchema.safeParse({ ...ok, attachment_url: "ไม่ใช่ลิงก์" }).success).toBe(false);
+  it("แนบหลายไฟล์พร้อมกันได้", () => {
+    const files = [
+      { url: "https://a.test/1.png", name: "แปลน.png", type: "image/png", size: 1024 },
+      { url: "https://a.test/2.pdf", name: "สรุป.pdf", type: "application/pdf", size: 2048 },
+    ];
+    expect(unitPostSchema.safeParse({ ...ok, attachments: files }).success).toBe(true);
+  });
+
+  it("ไม่ผ่านเมื่อ url ของไฟล์แนบไม่ใช่ URL", () => {
+    const bad = [{ url: "ไม่ใช่ลิงก์", name: "x", type: "", size: 0 }];
+    expect(unitPostSchema.safeParse({ ...ok, attachments: bad }).success).toBe(false);
+  });
+
+  it("ไม่ผ่านเมื่อแนบเกิน 20 ไฟล์", () => {
+    const many = Array.from({ length: 21 }, (_, i) => ({
+      url: `https://a.test/${i}.png`,
+      name: `${i}.png`,
+      type: "image/png",
+      size: 1,
+    }));
+    expect(unitPostSchema.safeParse({ ...ok, attachments: many }).success).toBe(false);
   });
 });
