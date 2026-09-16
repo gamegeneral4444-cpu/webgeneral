@@ -10,6 +10,8 @@ import type {
   SiteSettings,
   Category,
   UnitPost,
+  UnitStaffWithPerson,
+  UnitRole,
 } from "@/types/database";
 
 /**
@@ -242,4 +244,48 @@ export async function getUnitPost(id: string): Promise<UnitPost | null> {
     const { data } = await supabase.from("unit_posts").select("*").eq("id", id).maybeSingle();
     return (data as UnitPost) ?? null;
   }, null);
+}
+
+/**
+ * ผู้รับผิดชอบของทุกงาน คืนเป็น map: unit_slug -> { head[], assistant[] }
+ * ดึงทีเดียวทั้งตารางเพราะมีแค่หลักสิบแถว ถูกกว่ายิงทีละงาน
+ */
+export async function getUnitStaffMap(): Promise<
+  Record<string, { head: Staff[]; assistant: Staff[] }>
+> {
+  return safe(async () => {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("unit_staff")
+      .select("*, staff:staff(*)")
+      .order("sort_order", { ascending: true });
+
+    const rows = (data as UnitStaffWithPerson[]) ?? [];
+    const out: Record<string, { head: Staff[]; assistant: Staff[] }> = {};
+    for (const r of rows) {
+      if (!r.staff || r.staff.is_active === false) continue;
+      out[r.unit_slug] ??= { head: [], assistant: [] };
+      out[r.unit_slug][r.role].push(r.staff);
+    }
+    return out;
+  }, {});
+}
+
+/** บทบาทของบุคลากรคนหนึ่ง ใช้ตอนเปิดฟอร์มแก้ไขในหลังบ้าน */
+export async function getStaffUnitRoles(
+  staffId: string,
+): Promise<Record<string, UnitRole>> {
+  return safe(async () => {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("unit_staff")
+      .select("unit_slug, role")
+      .eq("staff_id", staffId);
+
+    const out: Record<string, UnitRole> = {};
+    for (const r of (data as { unit_slug: string; role: UnitRole }[]) ?? []) {
+      out[r.unit_slug] = r.role;
+    }
+    return out;
+  }, {});
 }

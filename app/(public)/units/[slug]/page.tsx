@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CalendarDays, Paperclip } from "lucide-react";
+import Image from "next/image";
+import { CalendarDays, Paperclip, UserRound } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
 import { EmptyState } from "@/components/public/section";
 import { UNITS, findUnit } from "@/lib/units";
-import { getUnitPosts } from "@/lib/data";
+import { getUnitPosts, getUnitStaffMap } from "@/lib/data";
 import { formatThaiDate } from "@/lib/format";
 
 export const revalidate = 300;
@@ -32,17 +33,68 @@ export default async function UnitDetailPage({
   const unit = findUnit(slug);
   if (!unit) notFound();
 
-  const posts = await getUnitPosts({ unitSlug: slug });
+  const [posts, staffMap] = await Promise.all([
+    getUnitPosts({ unitSlug: slug }),
+    getUnitStaffMap(),
+  ]);
+  const heads = staffMap[slug]?.head ?? [];
+  const assistants = staffMap[slug]?.assistant ?? [];
 
   return (
     <>
       <PageHero
         title={unit.label}
-        subtitle={`ผู้รับผิดชอบ : ${unit.owner || "ยังไม่ได้ระบุ"}`}
+        subtitle={
+          heads.length
+            ? `หัวหน้างาน : ${heads.map((h) => h.full_name).join(" · ")}`
+            : "ยังไม่ได้ระบุผู้รับผิดชอบ"
+        }
         crumbs={[{ label: "กลุ่มงาน", href: "/units" }, { label: unit.label }]}
       />
 
       <div className="mx-auto max-w-4xl px-4 py-12">
+        {(heads.length > 0 || assistants.length > 0) && (
+          <section className="mb-10">
+            <div className="mb-1 h-1 w-12 rounded-full bg-gold" aria-hidden />
+            <h2 className="mb-4 text-xl font-bold text-foreground">ผู้รับผิดชอบ</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                ...heads.map((p) => ({ person: p, role: "หัวหน้างาน" })),
+                ...assistants.map((p) => ({ person: p, role: "ผู้ช่วย" })),
+              ].map(({ person, role }) => (
+                <div
+                  key={`${role}-${person.id}`}
+                  className="flex items-center gap-3 rounded-xl border bg-card p-4 shadow-sm"
+                >
+                  <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-soft-gold ring-1 ring-gold/30">
+                    {person.image_url ? (
+                      <Image
+                        src={person.image_url}
+                        alt=""
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="grid size-full place-items-center text-gold-dark">
+                        <UserRound className="size-6" aria-hidden />
+                      </span>
+                    )}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium text-foreground">
+                      {person.full_name}
+                    </span>
+                    <span className="block text-xs text-muted-foreground">
+                      {role} · {person.position}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         <div className="mb-6 flex items-center gap-3">
           <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10">
             <unit.icon className="size-6" aria-hidden />

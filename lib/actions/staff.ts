@@ -42,16 +42,24 @@ export async function createStaff(formData: FormData): Promise<ActionResult> {
     const { supabase } = await authorize("manageSite");
     const parsed = parse(formData);
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message };
-    const { error } = await supabase.from("staff").insert(nullifyEmpty(parsed.data));
-    if (error) {
-      if (!isMissingCropColumn(error)) return { ok: false, error: error.message };
-      const fallback = await supabase.from("staff").insert(nullifyEmpty(withoutCropFields(parsed.data)));
-      if (fallback.error) return { ok: false, error: fallback.error.message };
+    let created = await supabase
+      .from("staff")
+      .insert(nullifyEmpty(parsed.data))
+      .select("id")
+      .single();
+    if (created.error) {
+      if (!isMissingCropColumn(created.error)) return { ok: false, error: created.error.message };
+      created = await supabase
+        .from("staff")
+        .insert(nullifyEmpty(withoutCropFields(parsed.data)))
+        .select("id")
+        .single();
+      if (created.error) return { ok: false, error: created.error.message };
     }
     revalidatePath("/admin/staff");
     revalidatePath("/staff");
     revalidatePath("/");
-    return { ok: true };
+    return { ok: true, id: created.data?.id };
   } catch (e) {
     return { ok: false, error: (e as Error).message };
   }

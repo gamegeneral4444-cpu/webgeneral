@@ -17,6 +17,9 @@ import { Uploader } from "@/components/admin/uploader";
 import { staffSchema, type StaffInput } from "@/lib/validations";
 import { BUCKETS } from "@/lib/constants";
 import { createStaff, updateStaff } from "@/lib/actions/staff";
+import { setStaffUnitRoles, type UnitRoleEntry } from "@/lib/actions/unit-staff";
+import { UNITS } from "@/lib/units";
+import type { UnitRole } from "@/types/database";
 import { decorateStaffImageUrl, getStaffImageCrop, stripStaffImageCrop } from "@/lib/staff-image";
 import type { Staff } from "@/types/database";
 
@@ -28,11 +31,20 @@ function toFormData(v: FormValues): FormData {
   return fd;
 }
 
-export function StaffForm({ initial }: { initial?: Staff }) {
+export function StaffForm({
+  initial,
+  initialUnitRoles = {},
+}: {
+  initial?: Staff;
+  /** บทบาทปัจจุบันของคนนี้ map: unit_slug -> "head" | "assistant" */
+  initialUnitRoles?: Record<string, UnitRole>;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const initialCrop = getStaffImageCrop(initial);
   const [image, setImage] = useState(stripStaffImageCrop(initial?.image_url));
+  const [unitRoles, setUnitRoles] =
+    useState<Record<string, UnitRole | "">>(initialUnitRoles);
 
   const {
     register,
@@ -74,6 +86,18 @@ export function StaffForm({ initial }: { initial?: Staff }) {
         ? await updateStaff(initial.id, toFormData(payload))
         : await createStaff(toFormData(payload));
       if (res.ok) {
+        const staffId = initial?.id ?? res.id;
+        if (staffId) {
+          const entries: UnitRoleEntry[] = Object.entries(unitRoles)
+            .filter(([, role]) => role === "head" || role === "assistant")
+            .map(([unit_slug, role]) => ({ unit_slug, role: role as UnitRole }));
+          const roleRes = await setStaffUnitRoles(staffId, entries);
+          if (!roleRes.ok) {
+            toast.error(`บันทึกข้อมูลแล้ว แต่บันทึกงานที่รับผิดชอบไม่สำเร็จ: ${roleRes.error}`);
+            router.refresh();
+            return;
+          }
+        }
         toast.success(initial ? "บันทึกแล้ว" : "เพิ่มบุคลากรเรียบร้อยแล้ว");
         router.push("/admin/staff");
         router.refresh();
@@ -189,6 +213,40 @@ export function StaffForm({ initial }: { initial?: Staff }) {
             checked={watch("is_active")}
             onCheckedChange={(v) => setValue("is_active", v)}
           />
+        </div>
+      </div>
+
+      <div className="space-y-3 rounded-lg border p-4">
+        <div>
+          <Label>งานที่รับผิดชอบ</Label>
+          <p className="mt-1 text-xs text-muted-foreground">
+            เลือกบทบาทของบุคลากรคนนี้ในแต่ละงาน ชื่อจะไปขึ้นบนหน้ากลุ่มงานอัตโนมัติ
+          </p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {UNITS.map((u) => (
+            <div key={u.slug} className="flex items-center justify-between gap-2 rounded-md border px-3 py-2">
+              <span className="flex min-w-0 items-center gap-2 text-sm">
+                <u.icon className="size-4 shrink-0 text-gold-dark" aria-hidden />
+                <span className="truncate">{u.label}</span>
+              </span>
+              <select
+                aria-label={`บทบาทใน${u.label}`}
+                value={unitRoles[u.slug] ?? ""}
+                onChange={(e) =>
+                  setUnitRoles((prev) => ({
+                    ...prev,
+                    [u.slug]: e.target.value as UnitRole | "",
+                  }))
+                }
+                className="shrink-0 rounded-md border bg-background px-2 py-1 text-xs"
+              >
+                <option value="">ไม่เกี่ยวข้อง</option>
+                <option value="head">หัวหน้างาน</option>
+                <option value="assistant">ผู้ช่วย</option>
+              </select>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -177,3 +177,21 @@ export interface UnitPost {
   created_at: string;
   updated_at: string;
 }
+
+export type UnitRole = "head" | "assistant";
+
+/** ผูกบุคลากรเข้ากับงานในฝ่าย พร้อมบทบาท */
+export interface UnitStaff {
+  id: string;
+  unit_slug: string;
+  staff_id: string;
+  role: UnitRole;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+/** แถว unit_staff ที่ join ข้อมูลบุคลากรมาด้วย (ใช้บนหน้าเว็บ) */
+export interface UnitStaffWithPerson extends UnitStaff {
+  staff: Staff | null;
+}

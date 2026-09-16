@@ -1,7 +1,7 @@
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { canWrite, canDelete, canManageSite, canManageUsers, type Role } from "@/lib/permissions";
 
-export type ActionResult = { ok: boolean; error?: string };
+export type ActionResult = { ok: boolean; error?: string; id?: string };
 
 type Guard = "write" | "delete" | "manageSite" | "manageUsers";
 

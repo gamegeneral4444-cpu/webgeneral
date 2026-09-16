@@ -3,13 +3,13 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
 import { UNITS } from "@/lib/units";
-import { getUnitPostCounts } from "@/lib/data";
+import { getUnitPostCounts, getUnitStaffMap } from "@/lib/data";
 
 export const metadata: Metadata = { title: "กลุ่มงาน" };
 export const revalidate = 300;
 
 export default async function UnitsPage() {
-  const counts = await getUnitPostCounts();
+  const [counts, staffMap] = await Promise.all([getUnitPostCounts(), getUnitStaffMap()]);
 
   return (
     <>
@@ -23,6 +23,7 @@ export default async function UnitsPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {UNITS.map((u) => {
             const count = counts[u.slug] ?? 0;
+            const heads = staffMap[u.slug]?.head ?? [];
             return (
               <Link
                 key={u.slug}
@@ -36,7 +37,10 @@ export default async function UnitsPage() {
                   {u.label}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  ผู้รับผิดชอบ : {u.owner || "ยังไม่ได้ระบุ"}
+                  หัวหน้างาน :{" "}
+                  {heads.length
+                    ? heads.map((h) => h.full_name).join(" · ")
+                    : "ยังไม่ได้ระบุ"}
                 </span>
                 <span className="mt-auto flex items-center gap-1 pt-1 text-sm font-medium text-primary">
                   {count > 0 ? `${count} รายการ` : "ยังไม่มีรายการ"}

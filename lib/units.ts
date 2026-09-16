@@ -21,8 +21,6 @@ export type Unit = {
   slug: string;
   label: string;
   icon: LucideIcon;
-  /** ชื่อผู้รับผิดชอบ เว้นว่างไว้ได้ หน้าเว็บจะขึ้นว่ายังไม่ได้ระบุ */
-  owner?: string;
 };
 
 /**
