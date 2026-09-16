@@ -21,6 +21,8 @@ export async function updateSettings(formData: FormData): Promise<ActionResult> 
       youtube_url: formData.get("youtube_url") ?? "",
       map_embed_url: formData.get("map_embed_url") ?? "",
       office_hours: formData.get("office_hours") ?? "",
+    vision: formData.get("vision") ?? "",
+    mission: formData.get("mission") ?? "",
     });
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message };
 

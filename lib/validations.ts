@@ -115,6 +115,8 @@ export const settingsSchema = z.object({
   youtube_url: httpUrl.optional().or(z.literal("")),
   map_embed_url: mapEmbedUrl,
   office_hours: z.string().optional().or(z.literal("")),
+  vision: z.string().max(1000).optional().or(z.literal("")),
+  mission: z.string().max(2000).optional().or(z.literal("")),
 });
 export type SettingsInput = z.infer<typeof settingsSchema>;
 

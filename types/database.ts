@@ -135,6 +135,9 @@ export interface SiteSettings {
   youtube_url: string | null;
   map_embed_url: string | null;
   office_hours: string | null;
+  vision: string | null;
+  /** หลายบรรทัด หนึ่งบรรทัด = พันธกิจหนึ่งข้อ */
+  mission: string | null;
   updated_by: string | null;
   updated_at: string;
 }

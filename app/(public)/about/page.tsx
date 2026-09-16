@@ -3,11 +3,32 @@ import Link from "next/link";
 import { Target, Eye } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
 import { UNITS } from "@/lib/units";
+import { getSettings } from "@/lib/data";
 
 export const metadata: Metadata = { title: "เกี่ยวกับเรา" };
 export const revalidate = 3600;
 
-export default function AboutPage() {
+/** ใช้เมื่อยังไม่ได้กรอกในหน้าตั้งค่า */
+const FALLBACK_VISION =
+  "มุ่งพัฒนาศักยภาพเด็กพิเศษให้มีคุณภาพเต็มตามศักยภาพ สามารถดำเนินชีวิตในสังคมได้อย่างปกติสุข โดยการมีส่วนร่วมของภาคีเครือข่ายที่หลากหลาย";
+
+const FALLBACK_MISSION = [
+  "สนับสนุนงานบริหารทั่วไปให้ดำเนินไปอย่างมีระบบ",
+  "พัฒนาการให้บริการแก่ครู บุคลากร นักเรียน และผู้ปกครอง",
+  "นำเทคโนโลยีมาใช้เพื่อลดขั้นตอนและเอกสารกระดาษ",
+  "ดูแลอาคารสถานที่และสภาพแวดล้อมให้ปลอดภัย น่าอยู่",
+];
+
+export default async function AboutPage() {
+  const settings = await getSettings();
+  const vision = settings?.vision?.trim() || FALLBACK_VISION;
+  // แยกบรรทัดแบบรองรับทั้ง LF และ CRLF เพราะข้อความมาจากช่องกรอกในหลังบ้าน
+  const missionLines = (settings?.mission ?? "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const mission = missionLines.length ? missionLines : FALLBACK_MISSION;
+
   return (
     <>
       <PageHero
@@ -25,11 +46,7 @@ export default function AboutPage() {
               </span>
               <h2 className="text-xl font-bold text-foreground">วิสัยทัศน์</h2>
             </div>
-            <p className="mt-4 text-muted-foreground">
-              มุ่งพัฒนาศักยภาพเด็กพิเศษให้มีคุณภาพเต็มตามศักยภาพ
-              สามารถดำเนินชีวิตในสังคมได้อย่างปกติสุข
-              โดยการมีส่วนร่วมของภาคีเครือข่ายที่หลากหลาย
-            </p>
+            <p className="mt-4 text-muted-foreground">{vision}</p>
           </div>
           <div className="rounded-2xl border bg-card p-7 shadow-sm">
             <div className="flex items-center gap-3">
@@ -39,10 +56,9 @@ export default function AboutPage() {
               <h2 className="text-xl font-bold text-foreground">พันธกิจ</h2>
             </div>
             <ul className="mt-4 space-y-2 text-muted-foreground">
-              <li>• สนับสนุนงานบริหารทั่วไปให้ดำเนินไปอย่างมีระบบ</li>
-              <li>• พัฒนาการให้บริการแก่ครู บุคลากร นักเรียน และผู้ปกครอง</li>
-              <li>• นำเทคโนโลยีมาใช้เพื่อลดขั้นตอนและเอกสารกระดาษ</li>
-              <li>• ดูแลอาคารสถานที่และสภาพแวดล้อมให้ปลอดภัย น่าอยู่</li>
+              {mission.map((item) => (
+                <li key={item}>• {item}</li>
+              ))}
             </ul>
           </div>
         </div>

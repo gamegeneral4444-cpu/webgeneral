@@ -59,6 +59,8 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
       youtube_url: initial?.youtube_url ?? "",
       map_embed_url: initial?.map_embed_url ?? "",
       office_hours: initial?.office_hours ?? "",
+      vision: initial?.vision ?? "",
+      mission: initial?.mission ?? "",
     },
   });
 
@@ -105,6 +107,26 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
             <Input id="office_hours" {...register("office_hours")} />
           </div>
         </div>
+
+        <div className="mt-5 space-y-5 rounded-lg border p-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="vision">วิสัยทัศน์</Label>
+            <Textarea id="vision" rows={3} {...register("vision")} />
+            <p className="text-xs text-muted-foreground">
+              แสดงบนหน้า &quot;เกี่ยวกับเรา&quot;
+            </p>
+            {errors.vision && <p className="text-sm text-destructive">{errors.vision.message}</p>}
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="mission">พันธกิจ</Label>
+            <Textarea id="mission" rows={6} {...register("mission")} />
+            <p className="text-xs text-muted-foreground">
+              พิมพ์บรรทัดละหนึ่งข้อ เว็บจะใส่จุดนำหน้าให้เอง ขึ้นบรรทัดใหม่ = ข้อใหม่
+            </p>
+            {errors.mission && <p className="text-sm text-destructive">{errors.mission.message}</p>}
+          </div>
+        </div>
+
         <div className="mt-5">
           <Label className="mb-2 block">โลโก้</Label>
           <Uploader
