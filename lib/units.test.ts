@@ -20,6 +20,17 @@ describe("UNITS", () => {
     expect(new Set(labels).size).toBe(labels.length);
   });
 
+  it("คำอธิบายที่ใส่ไว้ต้องไม่เป็นข้อความว่าง", () => {
+    for (const u of UNITS) {
+      if (u.description !== undefined) expect(u.description.trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  it("มีคำอธิบายครบทุกงาน ยกเว้นงานระบบดูแลช่วยเหลือนักเรียนที่ต้นฉบับยังไม่มี", () => {
+    const missing = UNITS.filter((u) => !u.description).map((u) => u.slug);
+    expect(missing).toEqual(["student-support"]);
+  });
+
   it("findUnit หาเจอด้วย slug", () => {
     expect(findUnit("building")?.label).toBe("งานอาคารสถานที่");
   });

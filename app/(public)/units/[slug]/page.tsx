@@ -54,6 +54,13 @@ export default async function UnitDetailPage({
       />
 
       <div className="mx-auto max-w-4xl px-4 py-12">
+        {unit.description && (
+          <section className="mb-10 rounded-xl border border-l-4 border-l-gold bg-card p-5 shadow-sm">
+            <h2 className="mb-2 text-lg font-bold text-foreground">หน้าที่และความรับผิดชอบ</h2>
+            <p className="leading-relaxed text-muted-foreground">{unit.description}</p>
+          </section>
+        )}
+
         {(heads.length > 0 || assistants.length > 0) && (
           <section className="mb-10">
             <div className="mb-1 h-1 w-12 rounded-full bg-gold" aria-hidden />

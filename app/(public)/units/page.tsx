@@ -36,6 +36,11 @@ export default async function UnitsPage() {
                 <span className="font-medium text-foreground group-hover:text-primary">
                   {u.label}
                 </span>
+                {u.description && (
+                  <span className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                    {u.description}
+                  </span>
+                )}
                 <span className="text-sm text-muted-foreground">
                   หัวหน้างาน :{" "}
                   {heads.length
