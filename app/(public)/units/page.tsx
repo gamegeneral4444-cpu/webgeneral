@@ -2,14 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
-import { UNITS } from "@/lib/units";
-import { getUnitPostCounts, getUnitStaffMap } from "@/lib/data";
+import { UNITS, unitDescription } from "@/lib/units";
+import { getUnitPostCounts, getUnitStaffMap, getUnitDescriptions } from "@/lib/data";
 
 export const metadata: Metadata = { title: "กลุ่มงาน" };
 export const revalidate = 300;
 
 export default async function UnitsPage() {
-  const [counts, staffMap] = await Promise.all([getUnitPostCounts(), getUnitStaffMap()]);
+  const [counts, staffMap, descriptions] = await Promise.all([
+    getUnitPostCounts(),
+    getUnitStaffMap(),
+    getUnitDescriptions(),
+  ]);
 
   return (
     <>
@@ -24,6 +28,7 @@ export default async function UnitsPage() {
           {UNITS.map((u) => {
             const count = counts[u.slug] ?? 0;
             const heads = staffMap[u.slug]?.head ?? [];
+            const description = unitDescription(u, descriptions);
             return (
               <Link
                 key={u.slug}
@@ -36,9 +41,9 @@ export default async function UnitsPage() {
                 <span className="font-medium text-foreground group-hover:text-primary">
                   {u.label}
                 </span>
-                {u.description && (
+                {description && (
                   <span className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                    {u.description}
+                    {description}
                   </span>
                 )}
                 <span className="text-sm text-muted-foreground">

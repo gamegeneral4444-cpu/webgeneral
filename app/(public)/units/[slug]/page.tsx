@@ -5,8 +5,8 @@ import { CalendarDays, UserRound } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
 import { EmptyState } from "@/components/public/section";
 import { PostAttachments } from "@/components/public/post-attachments";
-import { UNITS, findUnit } from "@/lib/units";
-import { getUnitPosts, getUnitStaffMap } from "@/lib/data";
+import { UNITS, findUnit, unitDescription } from "@/lib/units";
+import { getUnitPosts, getUnitStaffMap, getUnitDescriptions } from "@/lib/data";
 import { formatThaiDate } from "@/lib/format";
 
 export const revalidate = 300;
@@ -34,10 +34,12 @@ export default async function UnitDetailPage({
   const unit = findUnit(slug);
   if (!unit) notFound();
 
-  const [posts, staffMap] = await Promise.all([
+  const [posts, staffMap, descriptions] = await Promise.all([
     getUnitPosts({ unitSlug: slug }),
     getUnitStaffMap(),
+    getUnitDescriptions(),
   ]);
+  const description = unitDescription(unit, descriptions);
   const heads = staffMap[slug]?.head ?? [];
   const assistants = staffMap[slug]?.assistant ?? [];
 
@@ -54,10 +56,10 @@ export default async function UnitDetailPage({
       />
 
       <div className="mx-auto max-w-4xl px-4 py-12">
-        {unit.description && (
+        {description && (
           <section className="mb-10 rounded-xl border border-l-4 border-l-gold bg-card p-5 shadow-sm">
             <h2 className="mb-2 text-lg font-bold text-foreground">หน้าที่และความรับผิดชอบ</h2>
-            <p className="leading-relaxed text-muted-foreground">{unit.description}</p>
+            <p className="whitespace-pre-wrap leading-relaxed text-muted-foreground">{description}</p>
           </section>
         )}
 

@@ -22,12 +22,20 @@ export default async function AdminUnitPostsPage() {
             ลงงานและอัปเดตความคืบหน้าของแต่ละงาน แยกจากข่าวประชาสัมพันธ์
           </p>
         </div>
+        <div className="flex flex-wrap gap-2">
+        <Link
+          href="/admin/unit-details"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--admin-border)] bg-card px-4 text-sm font-semibold text-[var(--admin-ink)] transition-colors hover:bg-accent"
+        >
+          แก้คำอธิบายกลุ่มงาน
+        </Link>
         <Link
           href="/admin/unit-posts/create"
           className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           <Plus className="size-4" aria-hidden /> เพิ่มรายการ
         </Link>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-[var(--admin-border)] bg-card">

@@ -123,3 +123,14 @@ export const UNITS: Unit[] = [
 export function findUnit(slug: string): Unit | undefined {
   return UNITS.find((u) => u.slug === slug);
 }
+
+/**
+ * คำอธิบายที่จะแสดงจริง: ใช้ข้อความที่แอดมินแก้ในฐานข้อมูลก่อน
+ * ถ้าไม่มีหรือว่าง ค่อยใช้ข้อความสำรองในโค้ด
+ */
+export function unitDescription(
+  unit: Unit,
+  overrides: Record<string, string>,
+): string | undefined {
+  return overrides[unit.slug]?.trim() || unit.description;
+}

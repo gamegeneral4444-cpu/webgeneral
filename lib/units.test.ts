@@ -1,5 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { UNITS, findUnit } from "./units";
+import { UNITS, findUnit, unitDescription } from "./units";
+
+describe("unitDescription", () => {
+  const building = UNITS.find((u) => u.slug === "building")!;
+
+  it("ใช้ข้อความจากฐานข้อมูลเมื่อมี", () => {
+    expect(unitDescription(building, { building: "ข้อความใหม่" })).toBe("ข้อความใหม่");
+  });
+
+  it("ใช้ข้อความสำรองในโค้ดเมื่อฐานข้อมูลไม่มี", () => {
+    expect(unitDescription(building, {})).toBe(building.description);
+  });
+
+  it("ข้อความว่างหรือมีแต่ช่องว่าง ถือว่าไม่มี", () => {
+    expect(unitDescription(building, { building: "   " })).toBe(building.description);
+  });
+});
 
 describe("UNITS", () => {
   it("มีครบ 14 งาน", () => {

@@ -289,3 +289,16 @@ export async function getStaffUnitRoles(
     return out;
   }, {});
 }
+
+/** คำอธิบายกลุ่มงานที่แอดมินแก้ไว้ map: unit_slug -> ข้อความ */
+export async function getUnitDescriptions(): Promise<Record<string, string>> {
+  return safe(async () => {
+    const supabase = await createClient();
+    const { data } = await supabase.from("unit_details").select("unit_slug, description");
+    const out: Record<string, string> = {};
+    for (const r of (data as { unit_slug: string; description: string }[]) ?? []) {
+      out[r.unit_slug] = r.description;
+    }
+    return out;
+  }, {});
+}
