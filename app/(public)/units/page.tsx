@@ -2,33 +2,32 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
-import { UNITS, unitDescription } from "@/lib/units";
-import { getUnitPostCounts, getUnitStaffMap, getUnitDescriptions } from "@/lib/data";
+import { LucideIcon } from "@/components/lucide-icon";
+import { getUnitPostCounts, getUnitStaffMap, getUnits } from "@/lib/data";
 
 export const metadata: Metadata = { title: "กลุ่มงาน" };
 export const revalidate = 300;
 
 export default async function UnitsPage() {
-  const [counts, staffMap, descriptions] = await Promise.all([
+  const [counts, staffMap, units] = await Promise.all([
     getUnitPostCounts(),
     getUnitStaffMap(),
-    getUnitDescriptions(),
+    getUnits(),
   ]);
 
   return (
     <>
       <PageHero
         title="กลุ่มงานในฝ่ายบริหารทั่วไป"
-        subtitle={`โครงสร้างงานย่อยทั้ง ${UNITS.length} งาน พร้อมความคืบหน้าล่าสุดของแต่ละงาน`}
+        subtitle={`โครงสร้างงานย่อยทั้ง ${units.length} งาน พร้อมความคืบหน้าล่าสุดของแต่ละงาน`}
         crumbs={[{ label: "กลุ่มงาน" }]}
       />
 
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {UNITS.map((u) => {
+          {units.map((u) => {
             const count = counts[u.slug] ?? 0;
             const heads = staffMap[u.slug]?.head ?? [];
-            const description = unitDescription(u, descriptions);
             return (
               <Link
                 key={u.slug}
@@ -36,14 +35,14 @@ export default async function UnitsPage() {
                 className="group flex flex-col gap-3 rounded-xl border border-t-2 border-t-gold bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
               >
                 <span className="grid size-12 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <u.icon className="size-6" aria-hidden />
+                  <LucideIcon name={u.icon} className="size-6" aria-hidden />
                 </span>
                 <span className="font-medium text-foreground group-hover:text-primary">
                   {u.label}
                 </span>
-                {description && (
+                {u.description && (
                   <span className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                    {description}
+                    {u.description}
                   </span>
                 )}
                 <span className="text-sm text-muted-foreground">

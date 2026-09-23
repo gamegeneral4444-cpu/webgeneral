@@ -10,7 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { UNITS } from "@/lib/units";
+import { LucideIcon } from "@/components/lucide-icon";
+import type { Unit } from "@/lib/units";
 
 /**
  * เมนู "กลุ่มงาน" บนแถบหัวเว็บ (เฉพาะจอใหญ่)
@@ -18,7 +19,7 @@ import { UNITS } from "@/lib/units";
  * แยกเป็นสองส่วนโดยตั้งใจ: กดที่ชื่อ = ไปหน้ารวม /units, กดลูกศร = กางรายการ 14 งาน
  * ทำให้หน้ารวมไม่ถูกปิดทางเข้า และไม่ใช้ hover เปิดเพราะใช้บนจอสัมผัสไม่ได้
  */
-export function UnitsNav({ active }: { active: boolean }) {
+export function UnitsNav({ active, units }: { active: boolean; units: Unit[] }) {
   return (
     <span className="relative flex items-center">
       <Link
@@ -42,20 +43,20 @@ export function UnitsNav({ active }: { active: boolean }) {
         <DropdownMenuContent align="start" className="w-[34rem] max-w-[calc(100vw-2rem)] p-2">
           <DropdownMenuItem asChild>
             <Link href="/units" className="cursor-pointer font-medium text-primary">
-              ดูภาพรวมทั้ง {UNITS.length} งาน
+              ดูภาพรวมทั้ง {units.length} งาน
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
           <div className="grid grid-cols-1 gap-0.5 sm:grid-cols-2">
-            {UNITS.map((u) => (
+            {units.map((u) => (
               <DropdownMenuItem key={u.slug} asChild>
                 <Link
                   href={`/units/${u.slug}`}
                   className="cursor-pointer items-start gap-2 whitespace-normal leading-snug"
                 >
-                  <u.icon className="mt-0.5 size-4 shrink-0 text-gold-dark" aria-hidden />
+                  <LucideIcon name={u.icon} className="mt-0.5 size-4 shrink-0 text-gold-dark" aria-hidden />
                   <span>{u.label}</span>
                 </Link>
               </DropdownMenuItem>
@@ -77,9 +78,11 @@ export function UnitsNav({ active }: { active: boolean }) {
  */
 export function UnitsNavMobile({
   active,
+  units,
   onNavigate,
 }: {
   active: boolean;
+  units: Unit[];
   onNavigate?: () => void;
 }) {
   return (
@@ -100,16 +103,16 @@ export function UnitsNavMobile({
           onClick={onNavigate}
           className="rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-accent"
         >
-          ดูภาพรวมทั้ง {UNITS.length} งาน
+          ดูภาพรวมทั้ง {units.length} งาน
         </Link>
-        {UNITS.map((u) => (
+        {units.map((u) => (
           <Link
             key={u.slug}
             href={`/units/${u.slug}`}
             onClick={onNavigate}
             className="flex items-start gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
-            <u.icon className="mt-0.5 size-4 shrink-0 text-gold-dark" aria-hidden />
+            <LucideIcon name={u.icon} className="mt-0.5 size-4 shrink-0 text-gold-dark" aria-hidden />
             <span className="leading-snug">{u.label}</span>
           </Link>
         ))}

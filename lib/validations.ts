@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { extractMapEmbedSrc, isValidMapEmbedUrl } from "@/lib/map-embed";
-import { UNITS } from "@/lib/units";
+import { isValidUnitSlug } from "@/lib/units";
 
 /** ช่อง Google Map: วาง <iframe> ทั้งก้อนก็ได้ (ดึง src ให้) แล้วตรวจว่าเป็น embed URL จริง */
 const mapEmbedUrl = z
@@ -133,7 +133,7 @@ export const settingsSchema = z.object({
 export type SettingsInput = z.infer<typeof settingsSchema>;
 
 export const unitPostSchema = z.object({
-  unit_slug: z.string().refine((s) => UNITS.some((u) => u.slug === s), "ไม่พบงานที่เลือก"),
+  unit_slug: z.string().refine(isValidUnitSlug, "กรุณาเลือกงาน"),
   title: z.string().min(1, "กรุณากรอกหัวข้อ").max(255),
   body: z.string().max(20000).optional().or(z.literal("")),
   attachments: z

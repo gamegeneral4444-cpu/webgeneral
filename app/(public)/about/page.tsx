@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Target, Eye } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
-import { UNITS } from "@/lib/units";
-import { getSettings } from "@/lib/data";
+import { LucideIcon } from "@/components/lucide-icon";
+import { getSettings, getUnits } from "@/lib/data";
 
 export const metadata: Metadata = { title: "เกี่ยวกับเรา" };
 export const revalidate = 3600;
@@ -20,7 +20,7 @@ const FALLBACK_MISSION = [
 ];
 
 export default async function AboutPage() {
-  const settings = await getSettings();
+  const [settings, units] = await Promise.all([getSettings(), getUnits()]);
   const vision = settings?.vision?.trim() || FALLBACK_VISION;
   // แยกบรรทัดแบบรองรับทั้ง LF และ CRLF เพราะข้อความมาจากช่องกรอกในหลังบ้าน
   const missionLines = (settings?.mission ?? "")
@@ -68,14 +68,14 @@ export default async function AboutPage() {
           <h2 className="text-2xl font-bold text-foreground">ขอบข่ายงาน</h2>
           <p className="mt-1 text-muted-foreground">งานในความรับผิดชอบของฝ่ายบริหารทั่วไป</p>
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {UNITS.map((u) => (
+            {units.map((u) => (
               <Link
                 key={u.slug}
                 href={`/units/${u.slug}`}
                 className="flex flex-col items-center gap-3 rounded-xl border bg-card p-5 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
               >
                 <span className="grid size-12 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10">
-                  <u.icon className="size-6" aria-hidden />
+                  <LucideIcon name={u.icon} className="size-6" aria-hidden />
                 </span>
                 <span className="text-sm font-medium text-foreground">{u.label}</span>
               </Link>

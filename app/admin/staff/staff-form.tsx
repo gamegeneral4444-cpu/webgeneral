@@ -18,7 +18,8 @@ import { staffSchema, type StaffInput } from "@/lib/validations";
 import { BUCKETS } from "@/lib/constants";
 import { createStaff, updateStaff } from "@/lib/actions/staff";
 import { setStaffUnitRoles, type UnitRoleEntry } from "@/lib/actions/unit-staff";
-import { UNITS } from "@/lib/units";
+import { LucideIcon } from "@/components/lucide-icon";
+import type { Unit } from "@/lib/units";
 import type { UnitRole } from "@/types/database";
 import { decorateStaffImageUrl, getStaffImageCrop, stripStaffImageCrop } from "@/lib/staff-image";
 import type { Staff } from "@/types/database";
@@ -34,8 +35,10 @@ function toFormData(v: FormValues): FormData {
 export function StaffForm({
   initial,
   initialUnitRoles = {},
+  units,
 }: {
   initial?: Staff;
+  units: Unit[];
   /** บทบาทปัจจุบันของคนนี้ map: unit_slug -> "head" | "assistant" */
   initialUnitRoles?: Record<string, UnitRole>;
 }) {
@@ -224,10 +227,10 @@ export function StaffForm({
           </p>
         </div>
         <div className="grid gap-2 sm:grid-cols-2">
-          {UNITS.map((u) => (
+          {units.map((u) => (
             <div key={u.slug} className="flex items-center justify-between gap-2 rounded-md border px-3 py-2">
               <span className="flex min-w-0 items-center gap-2 text-sm">
-                <u.icon className="size-4 shrink-0 text-gold-dark" aria-hidden />
+                <LucideIcon name={u.icon} className="size-4 shrink-0 text-gold-dark" aria-hidden />
                 <span className="truncate">{u.label}</span>
               </span>
               <select

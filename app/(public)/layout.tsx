@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/components/public/site-header";
 import { SiteFooter } from "@/components/public/site-footer";
 import { BackToTop } from "@/components/public/back-to-top";
-import { getSettings } from "@/lib/data";
+import { getSettings, getUnits } from "@/lib/data";
 import { PageViewTracker } from "@/components/public/page-view-tracker";
 
 export const revalidate = 60;
@@ -11,10 +11,10 @@ export default async function PublicLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const settings = await getSettings();
+  const [settings, units] = await Promise.all([getSettings(), getUnits()]);
   return (
     <div className="flex min-h-dvh flex-col">
-      <SiteHeader settings={settings} />
+      <SiteHeader settings={settings} units={units} />
       <main className="flex-1">{children}</main>
       <SiteFooter settings={settings} />
       <BackToTop />

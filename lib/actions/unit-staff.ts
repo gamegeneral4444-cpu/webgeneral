@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { authorize, type ActionResult } from "@/lib/actions/helpers";
-import { UNITS } from "@/lib/units";
+
 import type { UnitRole } from "@/types/database";
 
 export type UnitRoleEntry = { unit_slug: string; role: UnitRole };
@@ -20,11 +20,11 @@ export async function setStaffUnitRoles(
   try {
     const { supabase } = await authorize("manageSite");
 
-    // กันค่าที่ไม่ได้มาจากรายการงานจริง
+    // กันค่าที่ไม่ได้มาจากรายการงานจริง — ตรวจกับตาราง units
+    const { data: unitRows } = await supabase.from("units").select("slug");
+    const known = new Set((unitRows ?? []).map((u: { slug: string }) => u.slug));
     const valid = entries.filter(
-      (e) =>
-        UNITS.some((u) => u.slug === e.unit_slug) &&
-        (e.role === "head" || e.role === "assistant"),
+      (e) => known.has(e.unit_slug) && (e.role === "head" || e.role === "assistant"),
     );
 
     const { error: delError } = await supabase

@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { getUnitPosts } from "@/lib/data";
-import { UNITS } from "@/lib/units";
+import { getUnitPosts, getUnits } from "@/lib/data";
+
 import { formatThaiDate } from "@/lib/format";
 
 export const metadata = { title: "กลุ่มงาน" };
 
-const UNIT_LABEL: Record<string, string> = Object.fromEntries(
-  UNITS.map((u) => [u.slug, u.label]),
-);
-
 export default async function AdminUnitPostsPage() {
-  const posts = await getUnitPosts({ includeDrafts: true });
+  const [posts, units] = await Promise.all([
+    getUnitPosts({ includeDrafts: true }),
+    getUnits({ includeHidden: true }),
+  ]);
+  const unitLabel: Record<string, string> = Object.fromEntries(units.map((u) => [u.slug, u.label]));
 
   return (
     <div className="space-y-5">
@@ -24,10 +24,10 @@ export default async function AdminUnitPostsPage() {
         </div>
         <div className="flex flex-wrap gap-2">
         <Link
-          href="/admin/unit-details"
+          href="/admin/units"
           className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--admin-border)] bg-card px-4 text-sm font-semibold text-[var(--admin-ink)] transition-colors hover:bg-accent"
         >
-          แก้คำอธิบายกลุ่มงาน
+          จัดการกลุ่มงาน
         </Link>
         <Link
           href="/admin/unit-posts/create"
@@ -61,7 +61,7 @@ export default async function AdminUnitPostsPage() {
               <tr key={p.id} className="border-t transition-colors hover:bg-accent/40">
                 <td className="px-4 py-3 font-medium text-foreground">{p.title}</td>
                 <td className="px-4 py-3 text-muted-foreground">
-                  {UNIT_LABEL[p.unit_slug] ?? p.unit_slug}
+                  {unitLabel[p.unit_slug] ?? p.unit_slug}
                 </td>
                 <td className="px-4 py-3">
                   <span

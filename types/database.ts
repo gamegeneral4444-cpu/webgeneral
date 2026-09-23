@@ -209,3 +209,16 @@ export interface UnitStaff {
 export interface UnitStaffWithPerson extends UnitStaff {
   staff: Staff | null;
 }
+
+/** แถวในตาราง units — แหล่งข้อมูลจริงของรายชื่อกลุ่มงาน */
+export interface UnitRow {
+  slug: string;
+  label: string;
+  /** ชื่อไอคอน Lucide เช่น "Building2" */
+  icon: string;
+  description: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}

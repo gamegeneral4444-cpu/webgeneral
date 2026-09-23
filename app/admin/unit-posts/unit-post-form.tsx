@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { unitPostSchema } from "@/lib/validations";
-import { UNITS } from "@/lib/units";
+import type { Unit } from "@/lib/units";
 import { createUnitPost, updateUnitPost } from "@/lib/actions/unit-posts";
 import { MultiUploader } from "@/components/admin/multi-uploader";
 import { BUCKETS } from "@/lib/constants";
@@ -34,7 +34,7 @@ function toFormData(v: FormValues): FormData {
   return fd;
 }
 
-export function UnitPostForm({ initial }: { initial?: UnitPost }) {
+export function UnitPostForm({ initial, units }: { initial?: UnitPost; units: Unit[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [files, setFiles] = useState<UnitPostFile[]>(initial?.attachments ?? []);
@@ -48,7 +48,7 @@ export function UnitPostForm({ initial }: { initial?: UnitPost }) {
   } = useForm<FormValues>({
     resolver: zodResolver(unitPostSchema),
     defaultValues: {
-      unit_slug: initial?.unit_slug ?? UNITS[0].slug,
+      unit_slug: initial?.unit_slug ?? units[0]?.slug ?? "",
       title: initial?.title ?? "",
       body: initial?.body ?? "",
       status: initial?.status ?? "draft",
@@ -83,7 +83,7 @@ export function UnitPostForm({ initial }: { initial?: UnitPost }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {UNITS.map((u) => (
+            {units.map((u) => (
               <SelectItem key={u.slug} value={u.slug}>
                 {u.label}
               </SelectItem>

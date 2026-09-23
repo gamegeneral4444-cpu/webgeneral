@@ -13,9 +13,16 @@ import { safeHttpUrl } from "@/lib/social";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { PUBLIC_NAV } from "@/lib/constants";
+import type { Unit } from "@/lib/units";
 import type { SiteSettings } from "@/types/database";
 
-export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
+export function SiteHeader({
+  settings,
+  units,
+}: {
+  settings: SiteSettings | null;
+  units: Unit[];
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const siteName = settings?.site_name ?? "ฝ่ายบริหารทั่วไป";
@@ -102,7 +109,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
           <nav className="hidden items-center gap-0.5 lg:flex" aria-label="เมนูหลัก">
             {PUBLIC_NAV.map((item) =>
               item.href === "/units" ? (
-                <UnitsNav key={item.href} active={isActive(item.href)} />
+                <UnitsNav key={item.href} active={isActive(item.href)} units={units} />
               ) : (
                 <Link
                   key={item.href}
@@ -150,6 +157,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings | null }) {
                       <UnitsNavMobile
                         key={item.href}
                         active={isActive(item.href)}
+                        units={units}
                         onNavigate={() => setOpen(false)}
                       />
                     ) : (

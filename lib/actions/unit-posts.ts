@@ -39,6 +39,13 @@ export async function createUnitPost(formData: FormData): Promise<ActionResult> 
     const parsed = parse(formData);
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message };
 
+    const { data: unit } = await supabase
+      .from("units")
+      .select("slug")
+      .eq("slug", parsed.data.unit_slug)
+      .maybeSingle();
+    if (!unit) return { ok: false, error: "ไม่พบงานที่เลือก" };
+
     const payload = nullifyEmpty(parsed.data);
     // เผยแพร่โดยไม่ระบุวันที่ = ใช้วันนี้ ให้เรียงลำดับบนหน้าเว็บได้ถูก
     if (payload.status === "published" && !payload.posted_at) {

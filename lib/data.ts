@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { FALLBACK_UNITS, type Unit } from "@/lib/units";
 import type {
   News,
   DocumentItem,
@@ -12,6 +13,7 @@ import type {
   UnitPost,
   UnitStaffWithPerson,
   UnitRole,
+  UnitRow,
 } from "@/types/database";
 
 /**
@@ -290,15 +292,49 @@ export async function getStaffUnitRoles(
   }, {});
 }
 
-/** คำอธิบายกลุ่มงานที่แอดมินแก้ไว้ map: unit_slug -> ข้อความ */
-export async function getUnitDescriptions(): Promise<Record<string, string>> {
+/**
+ * รายชื่อกลุ่มงานจากฐานข้อมูล ถ้าตารางยังไม่มีหรือว่าง จะใช้รายชื่อสำรองในโค้ด
+ * includeHidden ใช้ในหลังบ้านเพื่อให้เห็นงานที่ถูกซ่อนด้วย
+ */
+export async function getUnits(opts?: { includeHidden?: boolean }): Promise<Unit[]> {
+  const rows = await safe(async () => {
+    const supabase = await createClient();
+    let query = supabase.from("units").select("*").order("sort_order", { ascending: true });
+    if (!opts?.includeHidden) query = query.eq("is_active", true);
+    const { data } = await query;
+    return (data as UnitRow[]) ?? [];
+  }, [] as UnitRow[]);
+
+  if (!rows.length) return FALLBACK_UNITS;
+  return rows.map((r) => ({
+    slug: r.slug,
+    label: r.label,
+    icon: r.icon,
+    description: r.description?.trim() || undefined,
+  }));
+}
+
+/** แถวดิบจากตาราง units ใช้ในหลังบ้านที่ต้องเห็น sort_order กับ is_active ด้วย */
+export async function getUnitRows(): Promise<UnitRow[]> {
   return safe(async () => {
     const supabase = await createClient();
-    const { data } = await supabase.from("unit_details").select("unit_slug, description");
-    const out: Record<string, string> = {};
-    for (const r of (data as { unit_slug: string; description: string }[]) ?? []) {
-      out[r.unit_slug] = r.description;
-    }
-    return out;
-  }, {});
+    const { data } = await supabase.from("units").select("*").order("sort_order", { ascending: true });
+    return (data as UnitRow[]) ?? [];
+  }, []);
+}
+
+/** นับโพสต์และผู้รับผิดชอบของแต่ละงาน ใช้เตือนก่อนลบ */
+export async function getUnitUsage(): Promise<Record<string, { posts: number; staff: number }>> {
+  const out: Record<string, { posts: number; staff: number }> = {};
+  const posts = await getUnitPosts({ includeDrafts: true });
+  for (const p of posts) {
+    out[p.unit_slug] ??= { posts: 0, staff: 0 };
+    out[p.unit_slug].posts += 1;
+  }
+  const staffMap = await getUnitStaffMap();
+  for (const [slug, g] of Object.entries(staffMap)) {
+    out[slug] ??= { posts: 0, staff: 0 };
+    out[slug].staff = g.head.length + g.assistant.length;
+  }
+  return out;
 }

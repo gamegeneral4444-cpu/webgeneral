@@ -5,14 +5,16 @@ import { CalendarDays, UserRound } from "lucide-react";
 import { PageHero } from "@/components/public/page-hero";
 import { EmptyState } from "@/components/public/section";
 import { PostAttachments } from "@/components/public/post-attachments";
-import { UNITS, findUnit, unitDescription } from "@/lib/units";
-import { getUnitPosts, getUnitStaffMap, getUnitDescriptions } from "@/lib/data";
+import { findUnitIn } from "@/lib/units";
+import { LucideIcon } from "@/components/lucide-icon";
+import { getUnitPosts, getUnitStaffMap, getUnits } from "@/lib/data";
 import { formatThaiDate } from "@/lib/format";
 
 export const revalidate = 300;
 
-export function generateStaticParams() {
-  return UNITS.map((u) => ({ slug: u.slug }));
+export async function generateStaticParams() {
+  const units = await getUnits();
+  return units.map((u) => ({ slug: u.slug }));
 }
 
 export async function generateMetadata({
@@ -21,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const unit = findUnit(slug);
+  const unit = findUnitIn(await getUnits(), slug);
   return { title: unit?.label ?? "ไม่พบงาน" };
 }
 
@@ -31,15 +33,14 @@ export default async function UnitDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const unit = findUnit(slug);
-  if (!unit) notFound();
-
-  const [posts, staffMap, descriptions] = await Promise.all([
+  const [posts, staffMap, units] = await Promise.all([
     getUnitPosts({ unitSlug: slug }),
     getUnitStaffMap(),
-    getUnitDescriptions(),
+    getUnits(),
   ]);
-  const description = unitDescription(unit, descriptions);
+  const unit = findUnitIn(units, slug);
+  if (!unit) notFound();
+  const description = unit.description;
   const heads = staffMap[slug]?.head ?? [];
   const assistants = staffMap[slug]?.assistant ?? [];
 
@@ -107,7 +108,7 @@ export default async function UnitDetailPage({
 
         <div className="mb-6 flex items-center gap-3">
           <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-soft-gold text-primary ring-1 ring-primary/10">
-            <unit.icon className="size-6" aria-hidden />
+            <LucideIcon name={unit.icon} className="size-6" aria-hidden />
           </span>
           <div>
             <div className="mb-1 h-1 w-12 rounded-full bg-gold" aria-hidden />
