@@ -9,6 +9,7 @@ import { findUnitIn } from "@/lib/units";
 import { LucideIcon } from "@/components/lucide-icon";
 import { getUnitPosts, getUnitStaffMap, getUnits } from "@/lib/data";
 import { formatThaiDate } from "@/lib/format";
+import { getStaffImageSrc, getStaffImageStyle } from "@/lib/staff-image";
 
 export const revalidate = 300;
 
@@ -80,11 +81,12 @@ export default async function UnitDetailPage({
                   <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-soft-gold ring-1 ring-gold/30">
                     {person.image_url ? (
                       <Image
-                        src={person.image_url}
+                        src={getStaffImageSrc(person)}
                         alt=""
                         fill
                         sizes="48px"
                         className="object-cover"
+                        style={getStaffImageStyle(person)}
                       />
                     ) : (
                       <span className="grid size-full place-items-center text-gold-dark">
